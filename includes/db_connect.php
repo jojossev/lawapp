@@ -8,24 +8,26 @@ try {
         throw new Exception('DATABASE_URL environment variable is not set');
     }
 
-    // Log the database URL (masking sensitive information)
-    $masked_url = preg_replace('/\/\/[^:]+:[^@]+@/', '//*****:*****@', $database_url);
-    error_log("Trying to connect to database: " . $masked_url);
-
     // Parse the URL to get components
     $url = parse_url($database_url);
-    
+    if (!$url) {
+        throw new Exception('Invalid DATABASE_URL format');
+    }
+
+    // Ensure all required components are present
+    if (!isset($url['host'], $url['user'], $url['pass'], $url['path'])) {
+        throw new Exception('DATABASE_URL missing required components');
+    }
+
     // Extract database name without trailing underscore
     $dbname = rtrim(ltrim($url['path'], '/'), '_');
-    
-    // Log parsed components for debugging
-    error_log("Parsed components: host={$url['host']}, port={$url['port']}, dbname={$dbname}");
+    $port = isset($url['port']) ? $url['port'] : '5432';
     
     // Build the PDO DSN
     $dsn = sprintf(
         'pgsql:host=%s;port=%s;dbname=%s',
         $url['host'],
-        $url['port'] ?? '5432',
+        $port,
         $dbname
     );
 
@@ -36,11 +38,19 @@ try {
         PDO::ATTR_EMULATE_PREPARES => false
     ]);
 
+    // Log success to error log only
     error_log("Database connection successful");
 
 } catch(Exception $e) {
+    // Log error to error log
     error_log("Database connection error: " . $e->getMessage());
-    http_response_code(500);
+    
+    // Only set response code if headers haven't been sent
+    if (!headers_sent()) {
+        http_response_code(500);
+    }
+    
+    // Return error message
     die("Erreur de connexion à la base de données. Détail : " . $e->getMessage());
 }
 ?>
