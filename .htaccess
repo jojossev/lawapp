@@ -1,11 +1,11 @@
 RewriteEngine On
 
-# Redirection vers HTTPS
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# Forcer HTTPS
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Protection des fichiers
-<FilesMatch "\.(htaccess|htpasswd|ini|phps|fla|psd|log|sh)$">
+# Protection des fichiers sensibles
+<FilesMatch "^\.(htaccess|htpasswd|ini|phps|fla|psd|log|sh)">
 Order Allow,Deny
 Deny from all
 </FilesMatch>

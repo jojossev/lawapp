@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: lawapp
+    env: php
+    buildCommand: composer install
+    startCommand: vendor/bin/heroku-php-apache2
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: APP_URL
+        value: https://lawapp.onrender.com
+    autoDeploy: true
+    
+  - type: mysql
+    name: lawapp-db
+    plan: free
+    ipAllowList: []
