@@ -7,8 +7,6 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    postgresql \
-    postgresql-client \
     libpq-dev \
     zip \
     unzip
@@ -17,16 +15,11 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install -j$(nproc) \
-    pdo \
-    pdo_pgsql \
-    pgsql \
-    mbstring \
-    exif \
-    pcntl \
-    bcmath \
-    gd
+RUN docker-php-ext-install pdo && \
+    docker-php-ext-configure pgsql && \
+    docker-php-ext-install pgsql && \
+    docker-php-ext-install pdo_pgsql && \
+    docker-php-ext-install mbstring exif pcntl bcmath gd
 
 # Enable Apache modules
 RUN a2enmod rewrite
@@ -51,7 +44,14 @@ RUN mkdir -p /var/www/html/uploads \
     && chown -R www-data:www-data /var/www/html/cache
 
 # Configure PHP
-RUN echo "extension=pdo_pgsql.so" > /usr/local/etc/php/conf.d/pgsql.ini
+RUN { \
+    echo 'extension=pdo.so'; \
+    echo 'extension=pdo_pgsql.so'; \
+    echo 'extension=pgsql.so'; \
+} > /usr/local/etc/php/conf.d/pgsql.ini
+
+# Display PHP info for debugging
+RUN php -m | grep -i pdo
 
 # Expose port 80
 EXPOSE 80
