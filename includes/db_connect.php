@@ -15,23 +15,26 @@ try {
     // Parse the URL to get components
     $url = parse_url($database_url);
     
+    // Extract database name without trailing underscore
+    $dbname = rtrim(ltrim($url['path'], '/'), '_');
+    
+    // Log parsed components for debugging
+    error_log("Parsed components: host={$url['host']}, port={$url['port']}, dbname={$dbname}");
+    
     // Build the PDO DSN
     $dsn = sprintf(
-        'pgsql:host=%s;port=%s;dbname=%s;user=%s;password=%s',
+        'pgsql:host=%s;port=%s;dbname=%s',
         $url['host'],
         $url['port'] ?? '5432',
-        ltrim($url['path'], '/'),
-        $url['user'],
-        $url['pass']
+        $dbname
     );
 
-    // Create PDO instance with the DSN
-    $pdo = new PDO($dsn);
-    
-    // Configure PDO
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-    $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+    // Create PDO instance with credentials
+    $pdo = new PDO($dsn, $url['user'], $url['pass'], [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false
+    ]);
 
     error_log("Database connection successful");
 
