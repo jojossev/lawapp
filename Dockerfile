@@ -32,6 +32,9 @@ RUN mkdir -p /var/www/html/uploads \
     && chown -R www-data:www-data /var/www/html/uploads \
     && chown -R www-data:www-data /var/www/html/cache
 
+# Configure Apache
+RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
+
 # Verify PDO installation
 RUN php -r "echo 'Available PDO drivers: ' . implode(', ', PDO::getAvailableDrivers());" \
     && php -r "echo PHP_EOL . 'PDO PostgreSQL extension loaded: ' . (extension_loaded('pdo_pgsql') ? 'Yes' : 'No');"
