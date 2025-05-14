@@ -12,8 +12,21 @@ try {
     $masked_url = preg_replace('/\/\/[^:]+:[^@]+@/', '//*****:*****@', $database_url);
     error_log("Trying to connect to database: " . $masked_url);
 
-    // Create PDO instance directly with the URL
-    $pdo = new PDO($database_url);
+    // Parse the URL to get components
+    $url = parse_url($database_url);
+    
+    // Build the PDO DSN
+    $dsn = sprintf(
+        'pgsql:host=%s;port=%s;dbname=%s;user=%s;password=%s',
+        $url['host'],
+        $url['port'] ?? '5432',
+        ltrim($url['path'], '/'),
+        $url['user'],
+        $url['pass']
+    );
+
+    // Create PDO instance with the DSN
+    $pdo = new PDO($dsn);
     
     // Configure PDO
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
