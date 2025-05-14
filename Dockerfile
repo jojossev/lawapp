@@ -31,17 +31,8 @@ RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
 # Enable Apache modules
 RUN a2enmod rewrite
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 # Set working directory
 WORKDIR /var/www/html
-
-# Copy composer files first
-COPY composer.json composer.lock ./
-
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Copy Apache configuration
 COPY apache.conf /etc/apache2/sites-available/000-default.conf
