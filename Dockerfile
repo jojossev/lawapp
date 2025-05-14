@@ -9,17 +9,21 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libpq-dev \
     zip \
-    unzip
+    unzip \
+    && pecl install pdo_pgsql \
+    && docker-php-ext-enable pdo_pgsql
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo && \
-    docker-php-ext-configure pgsql && \
-    docker-php-ext-install pgsql && \
-    docker-php-ext-install pdo_pgsql && \
-    docker-php-ext-install mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install \
+    pdo \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd
 
 # Enable Apache modules
 RUN a2enmod rewrite
@@ -43,15 +47,16 @@ RUN mkdir -p /var/www/html/uploads \
     && chown -R www-data:www-data /var/www/html/uploads \
     && chown -R www-data:www-data /var/www/html/cache
 
-# Configure PHP
+# Configure PHP to display errors
 RUN { \
-    echo 'extension=pdo.so'; \
-    echo 'extension=pdo_pgsql.so'; \
-    echo 'extension=pgsql.so'; \
-} > /usr/local/etc/php/conf.d/pgsql.ini
+    echo 'display_errors=On'; \
+    echo 'error_reporting=E_ALL'; \
+    echo 'log_errors=On'; \
+} > /usr/local/etc/php/conf.d/error-logging.ini
 
-# Display PHP info for debugging
-RUN php -m | grep -i pdo
+# Verify PDO installation
+RUN php -r "print_r(PDO::getAvailableDrivers());" \
+    && php -m | grep pdo
 
 # Expose port 80
 EXPOSE 80
