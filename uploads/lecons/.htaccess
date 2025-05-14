@@ -1,0 +1,14 @@
+# Autoriser l'accès aux fichiers PDF et MP3/MP4
+<FilesMatch "\.(pdf|mp3|mp4)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Bloquer l'accès direct aux fichiers DOCX
+<FilesMatch "\.docx$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# Protection supplémentaire
+Options -Indexes

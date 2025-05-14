@@ -1,0 +1,10 @@
+/vendor/
+.env
+.DS_Store
+Thumbs.db
+*.log
+/node_modules/
+.idea/
+.vscode/
+*.swp
+*.swo

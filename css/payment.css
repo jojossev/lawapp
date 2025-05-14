@@ -1,0 +1,135 @@
+/* Styles spécifiques pour les pages de paiement */
+
+.payment-details {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.amount-display {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #4a6cf7;
+    margin-bottom: 1rem;
+}
+
+.amount-display .currency {
+    font-size: 1.5rem;
+    margin-left: 0.5rem;
+    opacity: 0.8;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #666;
+}
+
+.form-help {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.secure-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.secure-badge img {
+    width: 20px;
+    height: 20px;
+    opacity: 0.6;
+}
+
+/* Page de succès */
+.success-icon {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.success-icon img {
+    color: #4CAF50;
+}
+
+.transaction-details {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    color: #666;
+    font-weight: 500;
+}
+
+.detail-value {
+    font-family: monospace;
+    color: #4a6cf7;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.action-buttons .btn {
+    flex: 1;
+}
+
+/* Animations */
+.animate-bounce {
+    animation: bounce 1s ease;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-30px);
+    }
+    60% {
+        transform: translateY(-15px);
+    }
+}
+
+/* Mode sombre */
+[data-theme="dark"] .form-label,
+[data-theme="dark"] .form-help {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .detail-label {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .detail-item {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .secure-badge {
+    color: #9ca3af;
+}

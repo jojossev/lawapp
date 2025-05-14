@@ -1,0 +1,732 @@
+/* Styles généraux et variables de thème */
+:root {
+    --bg-color: #f4f4f4; /* Fond général pour le thème clair */
+    --text-color: #333;
+    --primary-color: #0056b3; /* Un bleu Udemy-like pour les accents */
+    --primary-color-rgb-tuple: 0,86,179; /* Tuple RGB pour box-shadow focus */
+    --primary-hover-color: #004085;
+    --header-bg-color: #ffffff; /* Header clair comme Udemy */
+    --header-text-color: #333;
+    --nav-link-color: #333;
+    --nav-link-hover-color: var(--primary-color);
+    --section-bg-color: #ffffff; /* Fond des sections clair */
+    --section-border-color: #e0e0e0; /* Bordure plus subtile */
+    --heading-color: #1c1d1f; /* Couleur de titre Udemy */
+    --button-bg-color: var(--primary-color);
+    --button-text-color: #ffffff;
+    --button-hover-bg-color: var(--primary-hover-color);
+    --footer-bg-color: #1c1d1f; /* Footer sombre comme Udemy */
+    --footer-text-color: #ffffff;
+    --link-color: var(--primary-color);
+    --link-hover-color: var(--primary-hover-color);
+    --card-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    --card-hover-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+[data-theme="dark"] {
+    --bg-color: #1c1d1f; /* Fond sombre pour le thème sombre */
+    --text-color: #f0f0f0;
+    /* --primary-color reste le même ou peut être ajusté pour le thème sombre */
+    /* --primary-hover-color reste le même ou peut être ajusté */
+    --header-bg-color: #2a2b2e; /* Header sombre */
+    --header-text-color: #f0f0f0;
+    --nav-link-color: #f0f0f0;
+    --nav-link-hover-color: #79c0ff; /* Bleu plus clair pour hover sur sombre */
+    --section-bg-color: #2a2b2e; /* Fond de section sombre */
+    --section-border-color: #444c56;
+    --heading-color: #ffffff;
+    /* --button-bg-color: var(--primary-color); */ /* Peut rester le même ou être ajusté */
+    /* --button-text-color: #ffffff; */
+    /* --button-hover-bg-color: var(--primary-hover-color); */
+    --footer-bg-color: #101112; /* Footer encore plus sombre */
+    --footer-text-color: #f0f0f0;
+    --link-color: #58a6ff;
+    --link-hover-color: #79c0ff;
+    --card-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    --card-hover-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+
+/* Réinitialisation de base et styles du corps */
+body {
+    font-family: var(--font-family-sans-serif);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--heading-color);
+    font-weight: 600; /* Police un peu plus grasse pour les titres */
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+a:hover {
+    color: var(--link-hover-color);
+    text-decoration: underline;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Header principal */
+.main-header {
+    background-color: var(--header-bg-color);
+    color: var(--header-text-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08); /* Ombre subtile comme Udemy */
+    border-bottom: 1px solid var(--section-border-color);
+    position: sticky; /* Header collant */
+    top: 0;
+    z-index: 1000;
+}
+
+/* Flexbox pour l'organisation du header */
+.main-header .header-container { /* Cible la div spécifique avec les deux classes */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px; /* Espace entre les éléments flexibles */
+}
+
+.main-header .logo {
+    flex-shrink: 0;
+}
+
+.main-header .header-search {
+    flex-grow: 1; /* Déjà présent, mais réaffirmé pour clarté */
+    max-width: 600px; /* Déjà présent */
+    margin: 0 15px; /* Ajusté pour être cohérent avec gap */
+    min-width: 200px; /* Assure une largeur minimale */
+}
+
+.main-header .header-search input[type="search"] {
+    width: 100%;
+    /* styles existants conservés */
+}
+
+.main-header .main-nav {
+    flex-shrink: 0;
+}
+
+.main-header .user-actions {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.main-header .logo a {
+    color: var(--header-text-color); /* La variable prendra le dessus si définie */
+    text-decoration: none;
+    font-size: 1.8em;
+    font-weight: bold;
+}
+[data-theme="light"] .main-header .logo a { /* Spécifique pour thème clair si besoin */
+    color: #000; /* Noir pour le logo en thème clair comme Udemy */
+}
+
+.main-header .header-search {
+    flex-grow: 1; /* Prend plus de place */
+    max-width: 600px; /* Limite la largeur */
+    margin: 0 25px;
+}
+
+.main-header .header-search input[type="search"] {
+    width: 100%;
+    padding: 12px 20px; /* Plus grand */
+    border-radius: 25px; /* Bordures arrondies */
+    border: 1px solid #ccc; /* Bordure visible */
+    background-color: var(--bg-color); /* S'adapte au thème */
+    color: var(--text-color);
+    font-size: 0.95em;
+}
+[data-theme="light"] .main-header .header-search input[type="search"] {
+    background-color: #f0f0f0; /* Champ de recherche gris clair en thème clair */
+}
+
+.main-header .main-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.main-header .main-nav ul li {
+    margin-left: 25px; /* Plus d'espacement */
+}
+
+.main-header .main-nav ul li a {
+    color: var(--nav-link-color);
+    text-decoration: none;
+    font-weight: 500; /* Un peu plus de poids */
+    padding: 8px 0;
+    font-size: 0.9rem; /* Légèrement plus petit pour un look plus net */
+    border-bottom: 2px solid transparent; /* Prépare l'espace pour la bordure au survol */
+    transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out; /* Ajout de la transition pour la bordure */
+}
+.main-header .main-nav ul li a:hover {
+    color: var(--nav-link-hover-color);
+    text-decoration: none; /* S'assurer qu'il n'y a pas de soulignement */
+    border-bottom-color: var(--nav-link-hover-color); /* La bordure prend la couleur du lien au survol */
+}
+
+.main-header .user-actions a {
+    margin-left: 20px;
+    color: var(--nav-link-color);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 12px; /* Style de bouton */
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+.main-header .user-actions a:hover {
+    background-color: var(--nav-link-hover-color);
+    color: var(--header-bg-color); /* Texte inversé au survol */
+    text-decoration:none;
+}
+.main-header .user-actions a[href="inscription.php"] { /* Bouton Inscription plus visible */
+    background-color: var(--primary-color);
+    color: #fff;
+    border: 1px solid var(--primary-color);
+}
+.main-header .user-actions a[href="inscription.php"]:hover {
+    background-color: var(--primary-hover-color);
+    border-color: var(--primary-hover-color);
+    color: #fff;
+}
+
+/* Styles pour les boutons d'action utilisateur spécifiques */
+.main-header .user-actions a.btn-secondary, /* Pour Inscription */
+.main-header .user-actions a[href="inscription.php"] { /* Compatibilité ancienne règle */
+    background-color: var(--primary-color);
+    color: var(--button-text-color);
+    border: 1px solid var(--primary-color);
+    padding: 8px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+.main-header .user-actions a.btn-secondary:hover,
+.main-header .user-actions a[href="inscription.php"]:hover {
+    background-color: var(--primary-hover-color);
+    border-color: var(--primary-hover-color);
+    color: var(--button-text-color);
+    text-decoration: none;
+}
+
+.main-header .user-actions a.btn-outline-primary { /* Pour Connexion */
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    padding: 8px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+.main-header .user-actions a.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: var(--button-text-color);
+    text-decoration: none;
+}
+
+/* Hero Banner */
+.hero-banner {
+    background: var(--section-bg-color); /* S'adapte au thème */
+    padding: 60px 20px; /* Plus grand */
+    text-align: center;
+    margin-bottom: 40px; /* Espace après */
+    border-bottom: 1px solid var(--section-border-color);
+}
+[data-theme="light"] .hero-banner { /* Image de fond ou couleur spécifique pour thème clair */
+    background-color: #f7f9fa; /* Gris très clair */
+}
+[data-theme="dark"] .hero-banner {
+    background-color: #2a2b2e; /* Un peu différent du bg général sombre */
+}
+
+.hero-banner h2 {
+    font-size: 2.8em; /* Plus grand titre */
+    margin-bottom: 15px;
+    font-weight: 700; /* Plus audacieux */
+    color: var(--heading-color);
+}
+
+.hero-banner p {
+    font-size: 1.3em; /* Texte plus grand */
+    margin-bottom: 30px;
+    color: var(--text-color);
+    opacity: 0.9;
+}
+
+.hero-banner .search-bar-hero input[type="search"] {
+    width: 60%; /* Plus large */
+    padding: 18px 25px; /* Plus grand */
+    font-size: 1.1em;
+    border-radius: 5px 0 0 5px;
+    border: 1px solid #ccc;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.hero-banner .search-bar-hero button {
+    padding: 18px 25px;
+    font-size: 1.1em;
+    border-radius: 0 5px 5px 0;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: 1px solid var(--button-bg-color);
+    cursor: pointer;
+    font-weight: 500;
+}
+.hero-banner .search-bar-hero button:hover {
+    background-color: var(--button-hover-bg-color);
+    border-color: var(--button-hover-bg-color);
+}
+
+/* Section Sélection de Cours */
+.course-selection {
+    padding: 20px;
+    max-width: 1200px; /* Conteneur max pour le contenu principal */
+    margin: 0 auto 40px auto; /* Centré et espacé */
+}
+
+.course-selection h3 {
+    font-size: 2em; /* Titre de section plus grand */
+    margin-bottom: 25px;
+    font-weight: 700;
+    border-bottom: 2px solid var(--primary-color); /* Soulignement accentué */
+    padding-bottom: 10px;
+    display: inline-block; /* Pour que la bordure s'adapte au texte */
+}
+
+.category-tabs {
+    margin-bottom: 30px;
+    display: flex; /* Alignement horizontal */
+    flex-wrap: wrap; /* Passage à la ligne si trop d'onglets */
+    gap: 10px; /* Espace entre les onglets */
+}
+
+.category-tabs button {
+    padding: 12px 20px; /* Onglets plus grands */
+    margin-right: 0; /* Géré par gap */
+    background: var(--section-bg-color);
+    border: 1px solid var(--section-border-color);
+    border-radius: 20px; /* Onglets arrondis */
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: 500;
+    color: var(--text-color);
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.category-tabs button:hover,
+.category-tabs a:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+/* Ajustements pour la liste ul à l'intérieur de .category-tabs */
+.category-tabs ul.category-filter-list {
+    list-style-type: none; /* Enlève les puces */
+    padding-left: 0; /* Enlève le padding par défaut de la liste */
+    margin-top: 0;
+    margin-bottom: 0;
+    display: flex; /* Aligne les li horizontalement */
+    flex-wrap: wrap;
+    gap: 10px; /* Correspond au gap de .category-tabs */
+    /* justify-content: inherit; /* Hérite du parent ou spécifier */
+}
+
+.category-tabs ul.category-filter-list li {
+    margin: 0; /* Annule les marges par défaut des li */
+}
+
+.category-tabs button.active {
+    background: var(--primary-color);
+    color: var(--button-text-color);
+    border-color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Grille et Cartes de Cours */
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsive */
+    gap: 25px; /* Espace entre les cartes */
+}
+
+.course-card {
+    border: 1px solid var(--section-border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--section-bg-color);
+    box-shadow: var(--card-shadow);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    display: flex; /* Pour mieux contrôler la structure interne */
+    flex-direction: column;
+}
+
+.course-card:hover {
+    transform: translateY(-5px); /* Effet de lévitation */
+    box-shadow: var(--card-hover-shadow);
+}
+
+.course-card img {
+    width: 100%;
+    height: 180px; /* Hauteur fixe pour l'image */
+    object-fit: cover; /* Assure que l'image couvre bien sans déformer */
+}
+
+.course-card-content {
+    padding: 20px; /* Plus d'espace interne */
+    flex-grow: 1; /* Permet au contenu de remplir l'espace */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Espace le contenu verticalement */
+}
+
+.course-card-content h4 {
+    font-size: 1.2em; /* Titre de carte plus grand */
+    margin: 0 0 8px 0;
+    color: var(--heading-color);
+    line-height: 1.3; /* Pour éviter que les titres longs ne soient trop serrés */
+}
+
+.course-card-content .author {
+    font-size: 0.85em; /* Plus petit */
+    color: #6a6f73; /* Gris Udemy pour l'auteur */
+    margin-bottom: 12px;
+}
+[data-theme="dark"] .course-card-content .author {
+    color: #adb5bd;
+}
+
+.course-card-content .rating {
+    margin-bottom: 12px;
+    font-size: 0.9em;
+    color: #e59819; /* Couleur pour les étoiles */
+}
+.course-card-content .rating span { /* Pour l'icône étoile */
+    margin-right: 4px;
+}
+
+.course-card-content .price {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--heading-color);
+    margin-bottom: 15px;
+}
+
+.course-card-content .btn-view-course {
+    display: block;
+    text-align: center;
+    background: var(--button-bg-color);
+    color: var(--button-text-color);
+    padding: 10px 15px; /* Bouton plus grand */
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: auto; /* Pousse le bouton vers le bas si la carte a plus d'espace */
+    font-weight: 500;
+    transition: background-color 0.2s ease-in-out;
+}
+.course-card-content .btn-view-course:hover {
+    background-color: var(--button-hover-bg-color);
+    text-decoration: none;
+    color: var(--button-text-color);
+}
+
+/* Footer Amélioré */
+.main-footer-enhanced {
+    background-color: var(--footer-bg-color);
+    color: var(--footer-text-color);
+    padding: 50px 20px 20px 20px; /* Plus de padding */
+    margin-top: 50px;
+}
+
+.main-footer-enhanced .footer-content {
+    display: flex;
+    flex-wrap: wrap; /* Pour la responsivité */
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto 30px auto;
+    gap: 30px; /* Espace entre les sections du footer */
+}
+
+.main-footer-enhanced .footer-section {
+    flex: 1; /* Prend l'espace disponible */
+    min-width: 220px; /* Largeur minimale avant de passer à la ligne */
+}
+
+.main-footer-enhanced .footer-section h4 {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    color: var(--footer-text-color);
+    position: relative;
+    padding-bottom: 10px;
+}
+/* Ligne sous les titres de section du footer */
+.main-footer-enhanced .footer-section h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 2px;
+    background-color: var(--primary-color);
+}
+
+.main-footer-enhanced .footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.main-footer-enhanced .footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.main-footer-enhanced .footer-section ul li a {
+    color: #a9a9a9; /* Gris clair pour les liens du footer */
+    text-decoration: none;
+}
+.main-footer-enhanced .footer-section ul li a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.main-footer-enhanced .newsletter input[type="email"] {
+    width: calc(100% - 100px); /* Ajuste la largeur en fonction du bouton */
+    padding: 10px;
+    border-radius: 4px 0 0 4px;
+    border: 1px solid #555;
+    background-color: #333;
+    color: #fff;
+    margin-right: -1px; /* Pour coller le bouton */
+}
+
+.main-footer-enhanced .newsletter button {
+    padding: 10px 15px;
+    border-radius: 0 4px 4px 0;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: 1px solid var(--primary-color);
+    cursor: pointer;
+    width: 95px; /* Largeur fixe pour le bouton */
+}
+.main-footer-enhanced .newsletter button:hover {
+    background-color: var(--primary-hover-color);
+    border-color: var(--primary-hover-color);
+}
+
+.main-footer-enhanced .footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #444; /* Séparateur */
+    font-size: 0.9em;
+    color: #a9a9a9;
+}
+.main-footer-enhanced .footer-bottom p {
+    margin: 5px 0;
+}
+
+/* Styles spécifiques pour les thèmes si besoin (outre les variables) */
+/* ... */
+
+/* Styles responsifs (Media Queries) - exemple de base */
+@media (max-width: 992px) {
+    .main-header {
+        flex-direction: column;
+        padding: 15px;
+    }
+    .main-header .header-search {
+        margin: 15px 0;
+        width: 80%;
+        max-width: none;
+    }
+    .main-header .main-nav ul {
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+    .main-header .main-nav ul li {
+        margin: 5px 10px;
+    }
+    .main-header .user-actions {
+        margin-top: 15px;
+    }
+    .hero-banner .search-bar-hero input[type="search"] {
+        width: 70%;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-banner h2 { font-size: 2.2em; }
+    .hero-banner p { font-size: 1.1em; }
+    .course-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); } /* Cartes un peu plus petites */
+    .main-footer-enhanced .footer-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .main-footer-enhanced .footer-section {
+        margin-bottom: 20px;
+    }
+    .main-footer-enhanced .footer-section h4::after { /* Centrer la ligne sous le titre */
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .main-footer-enhanced .newsletter input[type="email"],
+    .main-footer-enhanced .newsletter button {
+        width: 80%;
+        margin: 5px auto;
+        display: block;
+        border-radius: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-banner .search-bar-hero {
+        display: flex;
+        flex-direction: column;
+    }
+    .hero-banner .search-bar-hero input[type="search"],
+    .hero-banner .search-bar-hero button {
+        width: 90%;
+        margin: 5px auto;
+        border-radius: 5px; /* Rayon uniforme pour mobile */
+    }
+}
+
+/* Pages d'authentification (login, register) */
+.auth-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - var(--header-height, 70px) - var(--footer-height, 60px)); /* Ajuster selon hauteur réelle header/footer */
+    padding: 20px 0;
+}
+
+.auth-card {
+    background-color: var(--card-bg-color);
+    padding: 30px 40px;
+    border-radius: var(--card-border-radius, 8px);
+    box-shadow: var(--card-box-shadow, 0 4px 15px rgba(0,0,0,0.1));
+    width: 100%;
+    max-width: 450px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--section-border-color);
+}
+
+.auth-card .page-title {
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    color: var(--text-color);
+}
+
+.auth-form .form-group {
+    margin-bottom: 20px;
+}
+
+.auth-form .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.auth-form .form-control {
+    padding: 12px 15px;
+    border-radius: var(--input-border-radius, 4px);
+    border: 1px solid var(--input-border-color, #ccc);
+    background-color: var(--input-bg-color, #fff);
+    color: var(--text-color);
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.auth-form .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb-tuple, 0,86,179), 0.25);
+    outline: none;
+}
+
+.auth-form .btn-block {
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.auth-links {
+    margin-top: 25px;
+    font-size: 0.9rem;
+}
+
+.auth-links a {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+.auth-card .alert-danger {
+    background-color: var(--danger-bg-color, #f8d7da);
+    color: var(--danger-text-color, #721c24);
+    border-color: var(--danger-border-color, #f5c6cb);
+    border-radius: var(--input-border-radius, 4px);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+.auth-card .alert-danger p {
+    margin: 0;
+}
+.auth-card .alert-danger p:not(:last-child) {
+    margin-bottom: 5px;
+}
+
+/* Styles pour le Comparateur de Lois */
+.comparateur-container {
+    display: flex;
+    flex-wrap: wrap; /* Permet le passage à la ligne sur petits écrans */
+    gap: 20px; /* Espace entre les colonnes */
+    margin-top: 20px;
+}
+
+.colonne-loi {
+    flex: 1 1 300px; /* flex-grow, flex-shrink, flex-basis (permet le wrapping) */
+    border: 1px solid var(--input-border-color, #ccc);
+    padding: 20px;
+    background-color: var(--card-bg-color, #f9f9f9); /* Utilise la couleur de fond des cartes pour la cohérence */
+    border-radius: var(--card-border-radius, 8px);
+    box-shadow: var(--card-box-shadow, 0 2px 4px rgba(0,0,0,0.05));
+}
+
+.colonne-loi h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--section-border-color, #eee);
+    padding-bottom: 10px;
+}
+
+/* Responsive pour le comparateur */
+@media (max-width: 768px) {
+    .comparateur-container {
+        flex-direction: column;
+    }
+    .colonne-loi {
+        flex-basis: auto; /* Chaque colonne prend toute la largeur */
+    }
+}
+

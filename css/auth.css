@@ -1,0 +1,258 @@
+/* Styles pour les pages d'authentification */
+
+.auth-container {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.auth-box {
+    width: 100%;
+    max-width: 480px;
+    padding: 2.5rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #6e8efb 0%, #4a6cf7 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #4a6cf7;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+/* Formulaire */
+.auth-form {
+    margin-top: 2rem;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-icon img {
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
+}
+
+.form-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 2px solid rgba(74, 108, 247, 0.1);
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 4px rgba(74, 108, 247, 0.1);
+}
+
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1.5rem 0;
+}
+
+/* Checkbox personnalisé */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    user-select: none;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(74, 108, 247, 0.2);
+    border-radius: 6px;
+    margin-right: 8px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: #4a6cf7;
+    border-color: #4a6cf7;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 6px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Liens */
+.forgot-link {
+    color: #4a6cf7;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+/* Séparateur */
+.auth-separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.auth-separator::before,
+.auth-separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.auth-separator span {
+    padding: 0 1rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Boutons sociaux */
+.social-login {
+    margin-bottom: 2rem;
+}
+
+.social-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.social-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Liens de bas de page */
+.auth-links {
+    text-align: center;
+    font-size: 0.95rem;
+    margin-top: 2rem;
+}
+
+.gradient-link {
+    background: linear-gradient(135deg, #6e8efb 0%, #4a6cf7 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #4a6cf7;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.gradient-link:hover {
+    text-decoration: underline;
+}
+
+/* Mode sombre */
+[data-theme="dark"] .auth-box {
+    background: rgba(17, 24, 39, 0.7);
+}
+
+[data-theme="dark"] .auth-subtitle {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .form-input {
+    background: rgba(17, 24, 39, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #e5e7eb;
+}
+
+[data-theme="dark"] .auth-separator::before,
+[data-theme="dark"] .auth-separator::after {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .auth-separator span {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .social-btn {
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #e5e7eb;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .auth-box {
+        padding: 2rem;
+    }
+
+    .gradient-text {
+        font-size: 2rem;
+    }
+
+    .remember-forgot {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+}

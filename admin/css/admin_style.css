@@ -1,0 +1,302 @@
+/* admin/css/admin_style.css */
+
+/* Variables de style inspirées de style.css (thème clair) */
+:root {
+    --admin-bg-color: #f4f6f9; /* Gardons un fond admin légèrement différent pour le distinguer, ou #f4f4f4 pour être identique */
+    --admin-text-color: #333;
+    --admin-primary-color: #0056b3; 
+    --admin-primary-hover-color: #004085;
+    --admin-header-bg-color: #ffffff; 
+    --admin-header-text-color: #333;
+    --admin-nav-link-color: #333;
+    --admin-nav-link-hover-color: var(--admin-primary-color);
+    --admin-section-bg-color: #ffffff;
+    --admin-border-color: #e0e0e0; 
+    --admin-heading-color: #1c1d1f;
+    --admin-button-bg-color: var(--admin-primary-color);
+    --admin-button-text-color: #ffffff;
+    --admin-button-hover-bg-color: var(--admin-primary-hover-color);
+    --admin-link-color: var(--admin-primary-color);
+    --admin-link-hover-color: var(--admin-primary-hover-color);
+    --admin-card-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    --admin-font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --admin-table-header-bg: #f3f4f6; /* Gardons une distinction pour les en-têtes de tableau */
+    --admin-table-border-color: #d1d5db;
+    --admin-primary-color-rgb-tuple: 0,86,179; /* Ajouté pour le box-shadow des focus d'input */
+}
+
+body {
+    font-family: var(--admin-font-family-sans-serif);
+    margin: 0;
+    background-color: var(--admin-bg-color);
+    color: var(--admin-text-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    line-height: 1.6; /* Ajouté depuis style.css */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--admin-heading-color);
+    font-weight: 600; /* Ajouté/Confirmé depuis style.css */
+}
+
+a {
+    color: var(--admin-link-color);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+a:hover {
+    color: var(--admin-link-hover-color);
+    text-decoration: underline;
+}
+
+.admin-header {
+    background-color: var(--admin-header-bg-color);
+    color: var(--admin-header-text-color);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08); /* Style d'ombre de style.css */
+    border-bottom: 1px solid var(--admin-border-color); /* Style de bordure de style.css */
+}
+
+.admin-header .logo a {
+    color: var(--admin-heading-color); /* Utiliser la couleur de titre pour le logo */
+    text-decoration: none;
+    font-size: 1.75rem;
+    font-weight: bold;
+}
+
+.admin-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.admin-nav ul li a {
+    color: var(--admin-nav-link-color);
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    display: block;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-nav ul li a:hover,
+.admin-nav ul li a.active {
+    color: var(--admin-button-text-color); /* Texte blanc sur fond primaire */
+    background-color: var(--admin-primary-color); /* Fond primaire pour l'hover/active */
+}
+
+.admin-main {
+    flex: 1;
+    padding-bottom: 2rem;
+}
+
+.admin-container, .admin-content { /* .admin-content est utilisé dans dashboard */
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: var(--admin-section-bg-color);
+    border-radius: 8px;
+    box-shadow: var(--admin-card-shadow);
+    border: 1px solid var(--admin-border-color); /* Ajout d'une bordure subtile */
+}
+
+.admin-container h1, .admin-content h1 {
+    color: var(--admin-heading-color);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--admin-border-color);
+    padding-bottom: 0.75rem;
+}
+
+.admin-footer {
+    text-align: center;
+    padding: 1.5rem;
+    background-color: #1c1d1f; /* Footer sombre comme style.css */
+    color: #ffffff; /* Texte blanc pour footer sombre */
+    font-size: 0.9em;
+    margin-top: auto;
+}
+
+/* Styles pour les tableaux */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.admin-table th, .admin-table td {
+    border: 1px solid var(--admin-table-border-color);
+    padding: 0.75rem 1rem;
+    text-align: left;
+    vertical-align: top;
+}
+.admin-table th {
+    background-color: var(--admin-table-header-bg);
+    font-weight: 600;
+    color: var(--admin-heading-color); /* Couleur de titre pour les en-têtes */
+}
+.admin-table tr:nth-child(even) {
+    background-color: #f9fafb; /* Un fond très légèrement différent pour les lignes paires */
+}
+.admin-table a {
+    color: var(--admin-link-color);
+    font-weight: 500;
+}
+.admin-table a:hover {
+    color: var(--admin-link-hover-color);
+}
+
+/* Boutons */
+.btn {
+    display: inline-block;
+    padding: 0.65rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid transparent;
+    border-radius: 0.3rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.btn-primary {
+    color: var(--admin-button-text-color);
+    background-color: var(--admin-button-bg-color);
+    border-color: var(--admin-button-bg-color);
+}
+.btn-primary:hover {
+    color: var(--admin-button-text-color);
+    background-color: var(--admin-button-hover-bg-color);
+    border-color: var(--admin-button-hover-bg-color);
+}
+
+.btn-secondary {
+    color: var(--admin-primary-color);
+    background-color: transparent;
+    border-color: var(--admin-primary-color);
+}
+.btn-secondary:hover {
+    color: var(--admin-button-text-color);
+    background-color: var(--admin-primary-color);
+    border-color: var(--admin-primary-color);
+}
+
+.btn-danger {
+    color: #fff;
+    background-color: #dc3545; /* Rouge danger Bootstrap */
+    border-color: #dc3545;
+}
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+/* Formulaires */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--admin-text-color);
+}
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--admin-text-color);
+    background-color: #fff; /* Fond blanc pour les inputs */
+    background-clip: padding-box;
+    border: 1px solid var(--admin-border-color);
+    border-radius: 0.3rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.form-control:focus {
+    color: var(--admin-text-color);
+    background-color: #fff;
+    border-color: var(--admin-primary-hover-color);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(var(--admin-primary-color-rgb-tuple),.25); /* Utilise le tuple RGB */
+}
+select.form-control {
+    height: calc(1.5em + 1.5rem + 2px); /* Hauteur pour select */
+}
+textarea.form-control {
+    min-height: 120px;
+}
+
+/* Messages */
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.3rem;
+}
+.alert-success {
+    color: #0f5132;
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+}
+.alert-danger, .alert-error { /* .alert-error pour compatibilité */
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+.alert-warning {
+    color: #664d03;
+    background-color: #fff3cd;
+    border-color: #ffecb5;
+}
+.alert-info {
+    color: #055160;
+    background-color: #cff4fc;
+    border-color: #b6effb;
+}
+
+/* Widgets du Dashboard */
+.dashboard-widgets {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+.widget {
+    background-color: var(--admin-section-bg-color);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--admin-card-shadow);
+    border: 1px solid var(--admin-border-color);
+}
+.widget h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: var(--admin-heading-color);
+}
+.widget p {
+    margin-bottom: 1rem;
+}
+
+/* Style pour les liens d'action dans les tableaux, etc. */
+.action-links a, .action-links button {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem; /* Pour responsivité */
+    font-size: 0.875rem; /* Liens d'action un peu plus petits */
+}
+.action-links a:last-child, .action-links button:last-child {
+    margin-right: 0;
+}
