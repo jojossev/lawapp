@@ -1,5 +1,9 @@
 RewriteEngine On
 
+# Redirection de accueil.php vers index.php
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+accueil\.php [NC]
+RewriteRule ^ / [R=301,L]
+
 # Forcer HTTPS
 RewriteCond %{HTTP:X-Forwarded-Proto} !https
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
