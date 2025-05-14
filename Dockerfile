@@ -10,11 +10,7 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     zip \
     unzip \
-    && pecl install pdo_pgsql \
-    && docker-php-ext-enable pdo_pgsql
-
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+    pkg-config
 
 # Install PHP extensions
 RUN docker-php-ext-install \
@@ -24,6 +20,13 @@ RUN docker-php-ext-install \
     pcntl \
     bcmath \
     gd
+
+# Install PostgreSQL extensions
+RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install pgsql pdo_pgsql
+
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Enable Apache modules
 RUN a2enmod rewrite
@@ -55,8 +58,9 @@ RUN { \
 } > /usr/local/etc/php/conf.d/error-logging.ini
 
 # Verify PDO installation
-RUN php -r "print_r(PDO::getAvailableDrivers());" \
-    && php -m | grep pdo
+RUN php -r "echo 'PDO drivers available: '; print_r(PDO::getAvailableDrivers());" \
+    && php -r "echo '\nPDO enabled: ' . (extension_loaded('pdo') ? 'Yes' : 'No');" \
+    && php -r "echo '\nPDO PostgreSQL enabled: ' . (extension_loaded('pdo_pgsql') ? 'Yes' : 'No');"
 
 # Expose port 80
 EXPOSE 80
