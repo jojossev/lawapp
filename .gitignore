@@ -1,10 +1,37 @@
+# Dependencies
 /vendor/
-.env
-.DS_Store
-Thumbs.db
-*.log
 /node_modules/
+
+# IDE
 .idea/
 .vscode/
 *.swp
 *.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Uploads
+/uploads/*
+!/uploads/.gitkeep
+
+# Cache
+/cache/*
+!/cache/.gitkeep
+
+# Temporary files
+*.tmp
+*.temp
+
+# Database dumps
+*.sql
+!/database/initial_setup.sql
