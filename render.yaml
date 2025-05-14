@@ -1,17 +1,18 @@
 services:
   - type: web
     name: lawapp
-    env: php
-    buildCommand: composer install
-    startCommand: vendor/bin/heroku-php-apache2
+    env: docker
+    region: frankfurt
+    plan: free
     envVars:
       - key: ENVIRONMENT
         value: production
       - key: APP_URL
         value: https://lawapp.onrender.com
-    autoDeploy: true
-    
-  - type: mysql
-    name: lawapp-db
+      - key: DATABASE_URL
+        value: postgresql://lawapp_user:JqemXeIWprT3M3l7VxIti0DkS9qbMRFQ@dpg-d0ibffqdbo4c739c6jn0-a/lawapp
+
+databases:
+  - name: lawapp-db
+    region: frankfurt
     plan: free
-    ipAllowList: []
