@@ -1,6 +1,4 @@
 {
-    "name": "lawapp/web",
-    "description": "Application d'assistance juridique",
     "require": {
         "php": "^8.0",
         "ext-pdo": "*",
