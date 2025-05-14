@@ -2,8 +2,9 @@
 // Définir l'environnement
 define('ENVIRONMENT', getenv('ENVIRONMENT') ?: 'development');
 
-// URL de l'application
+// URLs de l'application
 define('APP_URL', getenv('APP_URL') ?: 'http://localhost');
+define('BASE_URL', rtrim(APP_URL, '/')); // Assure qu'il n'y a pas de slash à la fin
 
 // Configuration de la base de données
 if (getenv('DATABASE_URL')) {
