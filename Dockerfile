@@ -31,12 +31,21 @@ COPY composer.json composer.lock ./
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
+# Copy Apache configuration
+COPY apache.conf /etc/apache2/sites-available/000-default.conf
+
 # Copy application files
 COPY . .
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
+
+# Create required directories
+RUN mkdir -p /var/www/html/uploads \
+    && mkdir -p /var/www/html/cache \
+    && chown -R www-data:www-data /var/www/html/uploads \
+    && chown -R www-data:www-data /var/www/html/cache
 
 # Expose port 80
 EXPOSE 80
