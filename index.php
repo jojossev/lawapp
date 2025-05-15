@@ -28,51 +28,8 @@ if (isset($_SESSION['user_prenom'])) {
         <p>Votre plateforme d'apprentissage du droit, simplifiée et accessible.</p>
         
         <div class="section">
-            <h2>Résolution des problèmes de base de données</h2>
-            <p>Cette page simplifiée a été créée pour résoudre les problèmes de base de données sur Render. Utilisez les liens ci-dessous pour accéder aux différentes fonctionnalités.</p>
-            
-            <div class="section">
-                <h3>Outils de diagnostic et correction</h3>
-                <div class="links-grid">
-                    <a href="check_app_integrity.php" class="btn btn-info" style="font-weight: bold;">Vérifier l'intégrité de l'application</a>
-                    <a href="fix_all_tables.php" class="btn btn-primary">Corriger toutes les tables</a>
-                    <a href="fix_render.php" class="btn btn-primary">Corriger Render</a>
-                    <a href="test_db_connection.php" class="btn btn-primary">Test DB Connection</a>
-                    <a href="test_pg_connection.php" class="btn btn-primary">Test PostgreSQL</a>
-                    <a href="test_render.php" class="btn btn-info">Test Render</a>
-                    <a href="debug_render.php" class="btn btn-info">Debug Render</a>
-                    <a href="check_admin_path.php" class="btn btn-info">Vérifier Admin</a>
-                    <a href="test_sessions.php" class="btn btn-info">Test Sessions</a>
-                    <a href="check_render_sessions.php" class="btn btn-info">Sessions Render</a>
-                    <a href="test_redirections.php" class="btn btn-info">Test Redirections</a>
-                    <a href="fix_postgres_tables.php" class="btn btn-warning">Fix PostgreSQL Tables</a>
-                </div>
-            </div>
-            
-            <div class="section">
-                <h3>Scripts de correction spécifiques</h3>
-                <div class="links-grid">
-                    <a href="fix_all_issues.php" class="btn btn-primary" style="font-weight: bold; font-size: 1.2em; background-color: #007bff;">CORRIGER TOUS LES PROBLÈMES</a>
-                    <a href="add_column_id_categorie.php" class="btn">Ajouter colonne id_categorie</a>
-                    <a href="create_categories_tables.php" class="btn">Créer tables catégories</a>
-                    <a href="fix_categories_tables_pg.php" class="btn btn-warning">Corriger tables catégories PG</a>
-                    <a href="fix_admin_table.php" class="btn">Corriger table admin</a>
-                    <a href="fix_admin_table_pg.php" class="btn btn-warning">Corriger table admin PG</a>
-                    <a href="fix_podcasts_table.php" class="btn">Corriger table podcasts</a>
-                    <a href="fix_livres_table.php" class="btn">Corriger table livres</a>
-                    <a href="fix_cours_table.php" class="btn">Corriger table cours</a>
-                    <a href="fix_videos_table.php" class="btn">Corriger table videos</a>
-                    <a href="fix_users_tables.php" class="btn">Corriger tables utilisateurs</a>
-                    <a href="fix_inscriptions_table.php" class="btn">Corriger table inscriptions</a>
-                    <a href="fix_foreign_keys.php" class="btn btn-warning">Corriger clés étrangères</a>
-                    <a href="fix_db_compatibility.php" class="btn btn-warning">Compatibilité MySQL/PostgreSQL</a>
-                    <a href="fix_db_performance.php" class="btn btn-info">Optimiser performances DB</a>
-                    <a href="fix_db_security.php" class="btn btn-danger">Sécurité base de données</a>
-                    <a href="fix_session_cookies.php" class="btn btn-danger">Vérifier sessions/cookies</a>
-                    <a href="fix_files_permissions.php" class="btn btn-danger">Vérifier fichiers/permissions</a>
-                    <a href="fix_redirections.php" class="btn btn-danger">Corriger redirections</a>
-                </div>
-            </div>
+            <h2>Bienvenue sur la plateforme LawApp</h2>
+            <p>Votre portail d'apprentissage juridique en ligne. Accédez à des cours, des livres et des podcasts pour approfondir vos connaissances en droit.</p>
             
 
             
