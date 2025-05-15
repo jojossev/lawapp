@@ -3,36 +3,17 @@
 require_once 'config.php';
 
 try {
-    $database_url = getenv('DATABASE_URL');
+    // Utiliser la constante DB_URL définie dans config.php
+    $database_url = DB_URL;
     if (!$database_url) {
-        throw new Exception('DATABASE_URL environment variable is not set');
+        throw new Exception('DATABASE_URL is not set in config.php');
     }
 
-    // Parse the URL to get components
-    $url = parse_url($database_url);
-    if (!$url) {
-        throw new Exception('Invalid DATABASE_URL format');
-    }
-
-    // Ensure all required components are present
-    if (!isset($url['host'], $url['user'], $url['pass'], $url['path'])) {
-        throw new Exception('DATABASE_URL missing required components');
-    }
-
-    // Extract database name without trailing underscore
-    $dbname = rtrim(ltrim($url['path'], '/'), '_');
-    $port = isset($url['port']) ? $url['port'] : '5432';
+    // Pour MySQL, on peut utiliser directement le DSN
+    $dsn = $database_url;
     
-    // Build the PDO DSN
-    $dsn = sprintf(
-        'pgsql:host=%s;port=%s;dbname=%s',
-        $url['host'],
-        $port,
-        $dbname
-    );
-
-    // Create PDO instance with credentials
-    $pdo = new PDO($dsn, $url['user'], $url['pass'], [
+    // Créer l'instance PDO avec les identifiants
+    $pdo = new PDO($dsn, DB_USER, DB_PASS, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false

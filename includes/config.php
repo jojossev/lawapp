@@ -20,14 +20,14 @@ define('BASE_URL', rtrim(APP_URL, '/')); // Assure qu'il n'y a pas de slash à l
 if (getenv('DATABASE_URL')) {
     define('DB_URL', getenv('DATABASE_URL'));
 } else {
-    // Configuration par défaut pour le développement local (PostgreSQL)
-    define('DB_TYPE', 'pgsql');
+    // Configuration par défaut pour le développement local (MySQL)
+    define('DB_TYPE', 'mysql');
     define('DB_HOST', 'localhost');
-    define('DB_PORT', '5432');
+    define('DB_PORT', '3306');
     define('DB_NAME', 'lawapp');
-    define('DB_USER', 'postgres');
-    define('DB_PASS', 'postgres');
-    define('DB_URL', "postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}");
+    define('DB_USER', 'root');
+    define('DB_PASS', '');
+    define('DB_URL', "mysql:host=localhost;dbname=lawapp;charset=utf8mb4");
 }
 
 // Démarrer la session si ce n'est pas déjà fait et si les headers n'ont pas été envoyés
