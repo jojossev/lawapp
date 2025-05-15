@@ -2,9 +2,10 @@
 
 ## Configuration requise
 - PHP 8.0 ou supérieur
-- PostgreSQL 13 ou supérieur (ou MySQL 5.7+ pour développement local)
+- PostgreSQL 13 ou supérieur (pour production)
+- MySQL 5.7+ (pour développement local)
 - Serveur Web Apache
-- Extensions PHP PDO_PGSQL et PDO_MySQL activées
+- Extensions PHP PDO_PGSQL (production) ou PDO_MySQL (développement local) activées
 
 ## Installation
 
@@ -31,13 +32,13 @@
 
 4. Configuration
    - Le fichier de configuration se trouve dans `includes/config.php`
-   - Pour le développement local, il est configuré par défaut pour fonctionner avec :
+   - Pour le développement local, il est configuré par défaut pour fonctionner avec MySQL :
      - Host: localhost
      - Database: lawapp
      - Username: root
      - Password: (vide)
    - Pour la production, utilisez les variables d'environnement suivantes :
-     - `DATABASE_URL` : URL de connexion PostgreSQL
+     - `DATABASE_URL` : URL de connexion PostgreSQL (format: `postgresql://user:password@host:port/database`)
      - `APP_URL` : URL de l'application
      - `ENVIRONMENT` : production
 
@@ -98,7 +99,21 @@
 
 ## Structure de la base de données
 
-La base de données PostgreSQL contient les tables suivantes :
+### Compatibilité des bases de données
+
+L'application est compatible avec deux systèmes de gestion de base de données :
+
+- **PostgreSQL** : Utilisé en production sur Render
+- **MySQL** : Recommandé pour le développement local
+
+Les scripts de création de tables sont adaptés pour fonctionner avec les deux systèmes. Les principales différences sont :
+
+- PostgreSQL utilise `SERIAL` pour les clés auto-incrémentées, MySQL utilise `AUTO_INCREMENT`
+- PostgreSQL utilise `ON CONFLICT DO NOTHING`, MySQL utilise `INSERT IGNORE`
+
+### Tables de la base de données
+
+La base de données contient les tables suivantes :
 
 1. **utilisateurs** - Informations des utilisateurs
    - `id` - Identifiant unique
@@ -167,6 +182,17 @@ La base de données PostgreSQL contient les tables suivantes :
 - Inscription aux cours avec suivi de progression
 
 ## Notes techniques
+
+### Résolution des problèmes de tables manquantes
+
+Si vous rencontrez des erreurs SQL du type "relation does not exist" ou "undefined table", vous pouvez utiliser le script `fix_tables.php` pour corriger ces problèmes :
+
+1. Accédez à l'URL : `http://localhost/LawApp/fix_tables.php`
+2. Le script vérifiera l'existence des tables suivantes et les créera si nécessaire :
+   - `categories_livres`
+   - `categories_podcasts`
+
+Ce script est compatible avec MySQL et PostgreSQL.
 
 ### Redirections JavaScript
 
