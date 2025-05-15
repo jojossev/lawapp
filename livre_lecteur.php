@@ -16,7 +16,7 @@ $titre_livre = "Exemple Livre: Le Droit des Obligations"; // À remplacer
         <h1>LawApp</h1>
         <nav>
             <ul>
-                <li><a href="accueil.php">Accueil</a></li>
+                <li><a href="index.php">Accueil</a></li>
                 <li><a href="cours_liste.php">Cours</a></li>
                 <li><a href="videos_liste.php">Vidéos</a></li>
                 <li><a href="livres_liste.php">Livres</a></li>

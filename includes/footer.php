@@ -15,7 +15,7 @@
         <div class="footer-section links">
             <h4>Liens Utiles</h4>
             <ul>
-                <li><a href="accueil.php">Accueil</a></li>
+                <li><a href="index.php">Accueil</a></li>
                 <li><a href="cours_liste.php">Tous les Cours</a></li>
                 <li><a href="faq.php">FAQ</a></li> <!-- page FAQ à créer -->
                 <li><a href="contact.php">Contactez-nous</a></li> <!-- page Contact à créer -->

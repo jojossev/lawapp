@@ -43,7 +43,7 @@ unset($_SESSION['transaction_id']);
             <a href="mes_achats.php" class="btn btn-primary hover-scale">
                 Voir mes achats
             </a>
-            <a href="accueil.php" class="btn btn-outline hover-lift">
+            <a href="index.php" class="btn btn-outline hover-lift">
                 Retour à l'accueil
             </a>
         </div>

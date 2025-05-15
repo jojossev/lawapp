@@ -14,7 +14,7 @@ $cours_id = isset($_GET['cours_id']) ? htmlspecialchars($_GET['cours_id']) : 'N/
         <h1>LawApp</h1>
         <nav>
             <ul>
-                <li><a href="accueil.php">Accueil</a></li>
+                <li><a href="index.php">Accueil</a></li>
                 <li><a href="cours_liste.php">Cours</a></li>
                 <li><a href="videos_liste.php">Vidéos</a></li>
                 <li><a href="livres_liste.php">Livres</a></li>
