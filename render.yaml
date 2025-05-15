@@ -8,7 +8,7 @@ services:
       - key: ENVIRONMENT
         value: production
       - key: APP_URL
-        value: https://lawapp.onrender.com
+        value: https://lawapp-a6er.onrender.com
       - key: DATABASE_URL
         value: postgresql://lawapp_user:JqemXeIWprT3M3l7VxIti0DkS9qbMRFQ@dpg-d0ibffqdbo4c739c6jn0-a/lawapp
 
