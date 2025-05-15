@@ -185,14 +185,51 @@ La base de données contient les tables suivantes :
 
 ### Résolution des problèmes de tables manquantes
 
-Si vous rencontrez des erreurs SQL du type "relation does not exist" ou "undefined table", vous pouvez utiliser le script `fix_tables.php` pour corriger ces problèmes :
+Si vous rencontrez des erreurs SQL du type "relation does not exist" ou "undefined table", vous pouvez utiliser les scripts de correction suivants :
 
-1. Accédez à l'URL : `http://localhost/LawApp/fix_tables.php`
-2. Le script vérifiera l'existence des tables suivantes et les créera si nécessaire :
-   - `categories_livres`
-   - `categories_podcasts`
+1. **Script global** : `http://localhost/LawApp/fix_all_tables.php`
+   - Vérifie et corrige toutes les tables de la base de données en une seule fois
 
-Ce script est compatible avec MySQL et PostgreSQL.
+2. **Scripts de diagnostic** :
+   - `test_render.php` - Affiche des informations de base sur le serveur et les variables d'environnement
+   - `debug_render.php` - Vérifie l'existence et l'accessibilité des fichiers et dossiers importants
+   - `check_admin_path.php` - Vérifie l'existence et l'accessibilité du dossier admin
+   - `test_db_connection.php` - Teste la connexion à la base de données (MySQL ou PostgreSQL)
+   - `test_pg_connection.php` - Teste spécifiquement la connexion à PostgreSQL sur Render
+   - `test_utilisateurs.php` - Vérifie la table des utilisateurs
+   - `test_livres.php` - Vérifie la table des livres
+   - `test_categories_podcasts.php` - Vérifie la table des catégories de podcasts
+   - `test_inscriptions.php` - Vérifie la table des inscriptions
+
+3. **Scripts spécifiques** :
+   - `fix_admin_table.php` - Vérifie et crée la table des administrateurs
+   - `fix_livres_table.php` - Vérifie et crée la table des livres et ses dépendances
+   - `fix_podcasts_table.php` - Vérifie et crée la table des podcasts et ses dépendances
+   - `fix_cours_table.php` - Vérifie et crée la table des cours et ses dépendances
+   - `fix_videos_table.php` - Vérifie et crée la table des vidéos et ses dépendances
+   - `fix_users_tables.php` - Vérifie et crée les tables liées aux utilisateurs
+   - `fix_foreign_keys.php` - Vérifie et corrige les relations entre les tables
+
+4. **Scripts d'optimisation et de sécurité** :
+   - `fix_db_compatibility.php` - Corrige les problèmes de compatibilité entre PostgreSQL et MySQL
+   - `fix_db_performance.php` - Optimise les performances de la base de données
+   - `fix_db_security.php` - Améliore la sécurité de la base de données
+   - `fix_session_cookies.php` - Vérifie et corrige les problèmes de sessions et cookies
+   - `fix_files_permissions.php` - Vérifie et corrige les problèmes de fichiers et permissions
+   - `fix_redirections.php` - Vérifie et corrige les redirections HTTP en les remplaçant par des redirections JavaScript
+   - `fix_inscriptions_table.php` - Vérifie et crée la table des inscriptions aux cours
+
+5. **Scripts de test et diagnostic** :
+   - `test_sessions.php` - Teste la création et la persistance des sessions et cookies
+   - `check_render_sessions.php` - Vérifie l'état des sessions sur Render
+   - `test_inscriptions.php` - Affiche les inscriptions aux cours avec les informations des utilisateurs et des cours
+   - `test_redirections.php` - Teste les redirections HTTP et affiche les en-têtes de réponse
+
+6. **Scripts globaux** :
+   - `fix_all_issues.php` - Exécute tous les scripts de correction en séquence avec une barre de progression
+   - `check_app_integrity.php` - Vérifie l'intégrité globale de l'application (tables, répertoires, fichiers, variables d'environnement)
+
+Tous ces scripts sont accessibles depuis la page d'accueil de l'application et sont compatibles avec MySQL et PostgreSQL.
 
 ### Redirections JavaScript
 
@@ -200,8 +237,14 @@ Pour éviter les problèmes de "headers already sent", l'application utilise des
 
 ```php
 // Exemple de redirection JavaScript
+echo "<div style='text-align: center; margin: 20px; font-family: Arial, sans-serif;'>";
+echo "<h2>Redirection en cours...</h2>";
+echo "<p>Vous allez être redirigé vers une autre page. Si la redirection ne fonctionne pas, <a href='page.php'>cliquez ici</a>.</p>";
+echo "<div style='margin: 20px; padding: 10px; background-color: #f8f9fa; border-radius: 4px;'>";
+echo "<img src='assets/img/loading.gif' alt='Chargement...' style='width: 50px; height: 50px;'>";
+echo "</div>";
+echo "</div>";
 echo "<script>window.location.href = 'page.php';</script>";
-echo "<div style='background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; padding: 10px; margin: 10px;'>Message de succès. Redirection en cours...</div>";
 die();
 ```
 
@@ -216,3 +259,5 @@ die();
 - `register.php` - Inscription utilisateur
 - `view_cours.php` - Affichage des détails d'un cours
 - `inscription_cours.php` - Inscription à un cours
+
+Vous pouvez utiliser le script `fix_redirections.php` pour vérifier et corriger automatiquement les redirections HTTP dans ces fichiers.

@@ -106,23 +106,31 @@ if (!tableExists($pdo, 'administrateurs')) {
     
     executeQuery($pdo, $sql_create_admin, "Création de la table administrateurs");
     
-    // Insérer l'administrateur par défaut
+    // Insérer l'administrateur par défaut avec mot de passe haché
+    $admin_password = password_hash('admin', PASSWORD_DEFAULT);
     $sql_insert_admin = "
     INSERT INTO administrateurs (email, mot_de_passe, prenom, nom, role, statut) 
-    VALUES ('admin@lawapp.com', 'admin', 'Admin', 'Principal', 'admin', 'actif')";
+    VALUES ('admin@lawapp.com', :password, 'Admin', 'Principal', 'admin', 'actif')";
     
-    if (strpos(DB_URL, 'pgsql') !== false) {
-        // PostgreSQL
-        $sql_insert_admin .= " ON CONFLICT (email) DO NOTHING";
+    try {
+        $stmt = $pdo->prepare($sql_insert_admin);
+        $stmt->execute(['password' => $admin_password]);
+        echo "<p style='color:green'>✓ Insertion de l'administrateur par défaut : Succès</p>";
+        
+        echo "<div class='success'>
+            <p>Administrateur par défaut créé :</p>
+            <p>Email : admin@lawapp.com</p>
+            <p>Mot de passe : admin</p>
+            <p><strong>Note :</strong> Le mot de passe est maintenant stocké de manière sécurisée avec hachage.</p>
+        </div>";
+    } catch (PDOException $e) {
+        // Vérifier si l'erreur est due à une violation de contrainte d'unicité
+        if (strpos($e->getMessage(), 'unique') !== false || strpos($e->getMessage(), 'Duplicate') !== false) {
+            echo "<p style='color:orange'>⚠ L'administrateur avec l'email admin@lawapp.com existe déjà.</p>";
+        } else {
+            echo "<p style='color:red'>✗ Insertion de l'administrateur par défaut: " . $e->getMessage() . "</p>";
+        }
     }
-    
-    executeQuery($pdo, $sql_insert_admin, "Insertion de l'administrateur par défaut");
-    
-    echo "<div class='success'>
-        <p>Administrateur par défaut créé :</p>
-        <p>Email : admin@lawapp.com</p>
-        <p>Mot de passe : admin</p>
-    </div>";
 } else {
     echo "<p class='success'>La table 'administrateurs' existe.</p>";
     
@@ -168,23 +176,31 @@ if (!tableExists($pdo, 'administrateurs')) {
         if ($stmt->rowCount() === 0) {
             echo "<p class='error'>L'administrateur par défaut n'existe pas. Ajout de l'administrateur par défaut...</p>";
             
-            // Insérer l'administrateur par défaut
+            // Insérer l'administrateur par défaut avec mot de passe haché
+            $admin_password = password_hash('admin', PASSWORD_DEFAULT);
             $sql_insert_admin = "
             INSERT INTO administrateurs (email, mot_de_passe, prenom, nom, role, statut) 
-            VALUES ('admin@lawapp.com', 'admin', 'Admin', 'Principal', 'admin', 'actif')";
+            VALUES ('admin@lawapp.com', :password, 'Admin', 'Principal', 'admin', 'actif')";
             
-            if (strpos(DB_URL, 'pgsql') !== false) {
-                // PostgreSQL
-                $sql_insert_admin .= " ON CONFLICT (email) DO NOTHING";
+            try {
+                $stmt = $pdo->prepare($sql_insert_admin);
+                $stmt->execute(['password' => $admin_password]);
+                echo "<p style='color:green'>✓ Insertion de l'administrateur par défaut : Succès</p>";
+                
+                echo "<div class='success'>
+                    <p>Administrateur par défaut créé :</p>
+                    <p>Email : admin@lawapp.com</p>
+                    <p>Mot de passe : admin</p>
+                    <p><strong>Note :</strong> Le mot de passe est maintenant stocké de manière sécurisée avec hachage.</p>
+                </div>";
+            } catch (PDOException $e) {
+                // Vérifier si l'erreur est due à une violation de contrainte d'unicité
+                if (strpos($e->getMessage(), 'unique') !== false || strpos($e->getMessage(), 'Duplicate') !== false) {
+                    echo "<p style='color:orange'>⚠ L'administrateur avec l'email admin@lawapp.com existe déjà.</p>";
+                } else {
+                    echo "<p style='color:red'>✗ Insertion de l'administrateur par défaut: " . $e->getMessage() . "</p>";
+                }
             }
-            
-            executeQuery($pdo, $sql_insert_admin, "Insertion de l'administrateur par défaut");
-            
-            echo "<div class='success'>
-                <p>Administrateur par défaut créé :</p>
-                <p>Email : admin@lawapp.com</p>
-                <p>Mot de passe : admin</p>
-            </div>";
         } else {
             echo "<p class='success'>L'administrateur par défaut existe déjà.</p>";
         }
