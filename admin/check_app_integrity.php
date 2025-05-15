@@ -84,7 +84,10 @@ try {
         
         // Afficher les informations de connexion
         echo "<p>Type de base de données: <strong>" . (strpos(DB_URL, 'pgsql') !== false ? 'PostgreSQL' : 'MySQL') . "</strong></p>";
-        echo "<p>Nom de la base de données: <strong>" . DB_NAME . "</strong></p>";
+        // Extraire le nom de la base de données de l'URL
+        $db_name = parse_url(DATABASE_URL, PHP_URL_PATH);
+        $db_name = ltrim($db_name, '/');
+        echo "<p>Nom de la base de données: <strong>" . htmlspecialchars($db_name) . "</strong></p>";
         
         // Vérifier la version de la base de données
         $version = $pdo->query("SELECT version()")->fetchColumn();
