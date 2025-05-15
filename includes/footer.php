@@ -5,11 +5,11 @@
         <div class="footer-section about">
             <h4>À propos de LawApp</h4>
             <p>Votre plateforme N°1 pour maîtriser le droit. Cours, vidéos, articles de loi, et plus encore, conçus par des experts.</p>
-            <!-- Icônes de réseaux sociaux (exemple) -->
+            <!-- Icônes de réseaux sociaux -->
             <div class="social-icons">
-                <a href="#"><img src="path/to/facebook-icon.svg" alt="Facebook"></a>
-                <a href="#"><img src="path/to/twitter-icon.svg" alt="Twitter"></a>
-                <a href="#"><img src="path/to/linkedin-icon.svg" alt="LinkedIn"></a>
+                <a href="#"><img src="<?php echo BASE_URL; ?>/assets/icons/facebook.svg" alt="Facebook"></a>
+                <a href="#"><img src="<?php echo BASE_URL; ?>/assets/icons/twitter.svg" alt="Twitter"></a>
+                <a href="#"><img src="<?php echo BASE_URL; ?>/assets/icons/linkedin.svg" alt="LinkedIn"></a>
             </div>
         </div>
         <div class="footer-section links">
