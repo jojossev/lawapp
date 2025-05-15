@@ -90,6 +90,7 @@
 6. Vous pouvez vérifier l'état des tables avec les scripts de diagnostic :
    - `https://votre-app.onrender.com/test_utilisateurs.php` - Vérifie la table des utilisateurs
    - `https://votre-app.onrender.com/test_livres.php` - Vérifie la table des livres
+   - `https://votre-app.onrender.com/test_categories_podcasts.php` - Vérifie la table des catégories de podcasts
 
 7. Pour plus de détails, consultez le fichier [RENDER_CONFIG.md](RENDER_CONFIG.md)
 
