@@ -221,13 +221,21 @@ Si vous rencontrez des erreurs SQL du type "relation does not exist" ou "undefin
    - `fix_postgres_tables.php` - Crée et corrige les tables spécifiquement pour PostgreSQL
 
 5. **Scripts de test et diagnostic** :
+   - `test_db_connection.php` - Teste la connexion à la base de données et vérifie les tables existantes
+   - `check_and_fix_database.php` - Interface complète pour vérifier et corriger la structure de la base de données
+   - `test_videos.php` - Teste la structure et les données de la table videos
    - `test_sessions.php` - Teste la création et la persistance des sessions et cookies
    - `test_redirections.php` - Teste les redirections HTTP et affiche les en-têtes de réponse
    - `admin_scripts.php` - Page centralisée pour accéder à tous les scripts de diagnostic et correction
    - `test_inscriptions.php` - Affiche les inscriptions aux cours avec les informations des utilisateurs et des cours
    - `check_render_sessions.php` - Vérifie l'état des sessions sur Render
 
-6. **Scripts globaux** :
+6. **Scripts de correction** :
+   - `fix_videos_structure.php` - Corrige la structure de la table videos et ajoute la colonne id_createur
+   - `fix_lecons_quiz_tables.php` - Crée ou corrige les tables lecons et quiz pour les cours
+   - `fix_inscriptions_table.php` - Crée ou corrige la table inscriptions pour les inscriptions aux cours
+   - `fix_utilisateurs_table.php` - Crée ou corrige la table utilisateurs pour l'authentification
+   - `fix_cours_table.php` - Crée ou corrige les tables cours, categories_cours et formateurs
    - `fix_all_issues.php` - Exécute tous les scripts de correction en séquence avec une barre de progression
    - `check_app_integrity.php` - Vérifie l'intégrité globale de l'application (tables, répertoires, fichiers, variables d'environnement)
 
