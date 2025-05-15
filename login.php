@@ -1,6 +1,32 @@
 <?php
 $page_title = "Connexion";
-$extra_css = "<link rel='stylesheet' href='css/auth.css'>";
+$extra_css = "<link rel='stylesheet' href='css/auth.css'>
+<style>
+    .success-message {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        border-radius: 4px;
+        padding: 10px 15px;
+        margin: 15px 0;
+        text-align: center;
+        animation: fadeIn 0.5s;
+    }
+    .info-message {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+        border-radius: 4px;
+        padding: 10px 15px;
+        margin: 15px 0;
+        text-align: center;
+        animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>";
 require_once 'includes/header.php';
 
 $email = '';
@@ -8,8 +34,10 @@ $errors = [];
 
 // Redirection si l'utilisateur est déjà connecté
 if (isset($_SESSION['user_id'])) {
-    header("Location: profil.php");
-    exit;
+    // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+    echo "<script>window.location.href = 'profil.php';</script>";
+    echo "<div class='info-message'>Vous êtes déjà connecté. Redirection en cours...</div>";
+    // Ne pas utiliser exit ici pour permettre l'affichage du message
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -57,8 +85,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 error_log("Erreur lors de la mise à jour de la dernière connexion pour l'utilisateur ID {$_SESSION['user_id']}: " . $e->getMessage());
             }
 
-            header("Location: profil.php");
-            exit;
+            // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+            echo "<script>setTimeout(function() { window.location.href = 'profil.php'; }, 1000);</script>";
+            echo "<div class='success-message'>Connexion réussie ! Redirection en cours...</div>";
+            // Ne pas utiliser exit ici
         } else {
             if (!$user_data_from_db && empty($errors)) {
                 $errors[] = "Aucun compte n'est associé à cet email.";
