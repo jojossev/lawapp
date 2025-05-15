@@ -29,7 +29,7 @@ try {
                 l.auteur, 
                 l.image_url,
                 l.statut,
-                l.date_creation,
+                cl.date_creation,
                 cl.nom AS nom_categorie_livre
             FROM livres l
             LEFT JOIN categories_livres cl ON l.id_categorie = cl.id
