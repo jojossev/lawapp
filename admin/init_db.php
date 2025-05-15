@@ -68,6 +68,25 @@ CREATE TABLE IF NOT EXISTS cours (
 
 executeQuery($pdo, $sql_cours, "Création de la table cours");
 
+// Création de la table utilisateurs
+$sql_utilisateurs = "
+CREATE TABLE IF NOT EXISTS utilisateurs (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    prenom VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    mot_de_passe VARCHAR(255) NOT NULL,
+    role VARCHAR(20) DEFAULT 'utilisateur',
+    date_inscription TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    derniere_connexion TIMESTAMP,
+    statut VARCHAR(20) DEFAULT 'actif',
+    token_reset VARCHAR(255),
+    date_token_reset TIMESTAMP,
+    photo_profil VARCHAR(255)
+);";
+
+executeQuery($pdo, $sql_utilisateurs, "Création de la table utilisateurs");
+
 // Insertion de données de test pour les catégories
 $sql_insert_categories = "
 INSERT INTO categories_cours (nom, description, statut) VALUES 
@@ -89,6 +108,15 @@ INSERT INTO cours (titre, description, prix, categorie_id, niveau, duree_estimee
 ON CONFLICT (id) DO NOTHING;";
 
 executeQuery($pdo, $sql_insert_cours, "Insertion des cours de test");
+
+// Insertion d'un utilisateur de test (mot de passe: Test123!)
+$password_hash = password_hash('Test123!', PASSWORD_DEFAULT);
+$sql_insert_user = "
+INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role) VALUES 
+('Admin', 'Test', 'admin@test.com', '$password_hash', 'admin')
+ON CONFLICT (email) DO NOTHING;";
+
+executeQuery($pdo, $sql_insert_user, "Insertion d'un utilisateur de test");
 
 // Afficher le pied de page
 echo "
