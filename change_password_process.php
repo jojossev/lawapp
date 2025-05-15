@@ -3,8 +3,10 @@ require_once 'includes/config.php'; // Contient db_connect.php et session_start
 
 // Vérifier si l'utilisateur est connecté et si la requête est POST
 if (!isset($_SESSION['user_id']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: login.php');
-    exit;
+    // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+    echo "<script>window.location.href = 'login.php';</script>";
+    echo "<div style='background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; padding: 10px; margin: 10px;'>Accès non autorisé. Redirection en cours...</div>";
+    die();
 }
 
 $user_id = (int)$_SESSION['user_id'];
@@ -17,20 +19,26 @@ $confirm_password = $_POST['confirm_password'] ?? '';
 // Validation
 if (empty($current_password) || empty($new_password) || empty($confirm_password)) {
     $_SESSION['error_message'] = "Tous les champs sont obligatoires.";
-    header('Location: change_password.php');
-    exit;
+    // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+    echo "<script>window.location.href = 'change_password.php';</script>";
+    echo "<div style='background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; padding: 10px; margin: 10px;'>Tous les champs sont obligatoires. Redirection en cours...</div>";
+    die();
 }
 
 if (strlen($new_password) < 8) {
     $_SESSION['error_message'] = "Le nouveau mot de passe doit contenir au moins 8 caractères.";
-    header('Location: change_password.php');
-    exit;
+    // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+    echo "<script>window.location.href = 'change_password.php';</script>";
+    echo "<div style='background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; padding: 10px; margin: 10px;'>Le nouveau mot de passe doit contenir au moins 8 caractères. Redirection en cours...</div>";
+    die();
 }
 
 if ($new_password !== $confirm_password) {
     $_SESSION['error_message'] = "Le nouveau mot de passe et sa confirmation ne correspondent pas.";
-    header('Location: change_password.php');
-    exit;
+    // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+    echo "<script>window.location.href = 'change_password.php';</script>";
+    echo "<div style='background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; padding: 10px; margin: 10px;'>Le nouveau mot de passe et sa confirmation ne correspondent pas. Redirection en cours...</div>";
+    die();
 }
 
 try {
@@ -50,8 +58,10 @@ try {
     // IMPORTANT: Ceci suppose que les mots de passe des utilisateurs sont hachés en BDD
     if (!password_verify($current_password, $current_password_hash)) {
         $_SESSION['error_message'] = "Le mot de passe actuel est incorrect.";
-        header('Location: change_password.php');
-        exit;
+        // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+        echo "<script>window.location.href = 'change_password.php';</script>";
+        echo "<div style='background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; padding: 10px; margin: 10px;'>Le mot de passe actuel est incorrect. Redirection en cours...</div>";
+        die();
     }
 
     // 3. Hasher le nouveau mot de passe
@@ -64,22 +74,31 @@ try {
 
     if ($stmt_update_pass->execute()) {
         $_SESSION['success_message'] = "Votre mot de passe a été changé avec succès.";
-        // Optionnel: rediriger vers profil.php au lieu de change_password.php
-        header('Location: profil.php'); 
+        // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+        echo "<script>window.location.href = 'profil.php';</script>";
+        echo "<div style='background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; padding: 10px; margin: 10px;'>Votre mot de passe a été changé avec succès. Redirection en cours...</div>";
+        die();
     } else {
         $_SESSION['error_message'] = "Une erreur s'est produite lors de la mise à jour de votre mot de passe.";
-        header('Location: change_password.php');
+        // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+        echo "<script>window.location.href = 'change_password.php';</script>";
+        echo "<div style='background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; padding: 10px; margin: 10px;'>Une erreur s'est produite lors de la mise à jour de votre mot de passe. Redirection en cours...</div>";
+        die();
     }
 
 } catch (PDOException $e) {
     error_log("Erreur PDO lors du changement de MDP (user ID: {$user_id}): " . $e->getMessage());
     $_SESSION['error_message'] = "Une erreur technique est survenue. Veuillez réessayer.";
-    header('Location: change_password.php');
+    // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+    echo "<script>window.location.href = 'change_password.php';</script>";
+    echo "<div style='background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; padding: 10px; margin: 10px;'>Une erreur technique est survenue. Veuillez réessayer. Redirection en cours...</div>";
+    die();
 } catch (Exception $e) {
     error_log("Erreur lors du changement de MDP (user ID: {$user_id}): " . $e->getMessage());
     $_SESSION['error_message'] = $e->getMessage(); // Peut être "Utilisateur non trouvé."
-    header('Location: change_password.php');
+    // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+    echo "<script>window.location.href = 'change_password.php';</script>";
+    echo "<div style='background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; padding: 10px; margin: 10px;'>" . htmlspecialchars($e->getMessage()) ." Redirection en cours...</div>";
+    die();
 }
-
-exit;
 ?>

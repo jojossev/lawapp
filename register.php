@@ -11,8 +11,10 @@ $success_message = '';
 
 // Redirection si l'utilisateur est déjà connecté
 if (isset($_SESSION['user_id'])) {
-    header("Location: profil.php");
-    exit;
+    // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+    echo "<script>window.location.href = 'profil.php';</script>";
+    echo "<div style='background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; padding: 10px; margin: 10px;'>Vous êtes déjà connecté. Redirection vers votre profil...</div>";
+    die();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

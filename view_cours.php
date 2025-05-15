@@ -8,8 +8,10 @@ require_once 'includes/header.php';
 $cours_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if (!$cours_id) {
-    header('Location: cours.php');
-    exit;
+    // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+    echo "<script>window.location.href = 'cours.php';</script>";
+    echo "<div style='background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; padding: 10px; margin: 10px;'>ID de cours non spécifié. Redirection vers la liste des cours...</div>";
+    die();
 }
 
 try {
@@ -27,8 +29,10 @@ try {
 
     if (!$cours) {
         $_SESSION['error_message'] = "Cours non trouvé.";
-        header('Location: cours.php');
-        exit;
+        // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+        echo "<script>window.location.href = 'cours.php';</script>";
+        echo "<div style='background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; padding: 10px; margin: 10px;'>Cours non trouvé. Redirection vers la liste des cours...</div>";
+        die();
     }
 
     // Récupérer les modules du cours

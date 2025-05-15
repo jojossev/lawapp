@@ -6,8 +6,10 @@ require_once 'includes/header.php'; // Inclut le header commun et démarre la se
 if (!isset($_SESSION['user_id'])) {
     // Rediriger vers la page de connexion si non connecté
     $_SESSION['error_message'] = "Veuillez vous connecter pour accéder à votre profil.";
-    header('Location: login.php');
-    exit;
+    // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+    echo "<script>window.location.href = 'login.php';</script>";
+    echo "<div class='alert alert-warning'>Vous devez être connecté pour accéder à cette page. Redirection en cours...</div>";
+    // Ne pas utiliser exit ici pour permettre l'affichage du message
 }
 
 $user_id = (int)$_SESSION['user_id'];
@@ -47,8 +49,10 @@ try {
     error_log("Erreur profil.php pour user ID {$user_id}: " . $e->getMessage());
     unset($_SESSION['user_id']); // Déconnecter l'utilisateur si son compte est invalide
     $_SESSION['error_message'] = "Votre session est invalide. Veuillez vous reconnecter.";
-    header('Location: login.php');
-    exit;
+    // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+    echo "<script>window.location.href = 'login.php';</script>";
+    echo "<div class='alert alert-danger'>Votre session est invalide. Redirection vers la page de connexion...</div>";
+    // Ne pas utiliser exit ici pour permettre l'affichage du message
 }
 
 // Données placeholder pour les stats (à remplacer par des requêtes réelles si nécessaire)

@@ -57,6 +57,7 @@
      - Mot de passe : admin123
 
 ## Structure des dossiers
+
 - admin/ : Interface d'administration
 - includes/ : Fichiers de configuration et classes
 - assets/ : Ressources CSS, JS, images
@@ -91,6 +92,7 @@
    - `https://votre-app.onrender.com/test_utilisateurs.php` - Vérifie la table des utilisateurs
    - `https://votre-app.onrender.com/test_livres.php` - Vérifie la table des livres
    - `https://votre-app.onrender.com/test_categories_podcasts.php` - Vérifie la table des catégories de podcasts
+   - `https://votre-app.onrender.com/test_inscriptions.php` - Vérifie la table des inscriptions
 
 7. Pour plus de détails, consultez le fichier [RENDER_CONFIG.md](RENDER_CONFIG.md)
 
@@ -98,7 +100,7 @@
 
 La base de données PostgreSQL contient les tables suivantes :
 
-1. **utilisateurs** - Stocke les informations des utilisateurs
+1. **utilisateurs** - Informations des utilisateurs
    - `id` - Identifiant unique
    - `nom`, `prenom` - Nom et prénom de l'utilisateur
    - `email` - Adresse email (unique)
@@ -146,10 +148,45 @@ La base de données PostgreSQL contient les tables suivantes :
    - `statut` - Statut (actif, inactif)
    - `date_creation` - Date de création
 
+7. **inscriptions** - Inscriptions des utilisateurs aux cours
+   - `id` - Identifiant unique
+   - `id_utilisateur` - Identifiant de l'utilisateur (clé étrangère)
+   - `id_cours` - Identifiant du cours (clé étrangère)
+   - `date_inscription` - Date d'inscription
+   - `progres` - Progression dans le cours (en pourcentage)
+   - `statut` - Statut de l'inscription (actif, inactif)
+
 ## Fonctionnalités
+
 - Gestion des cours juridiques
 - Bibliothèque de ressources juridiques
 - Assistant juridique (chatbot)
 - Quiz et évaluations
 - Gestion des utilisateurs
 - Système de paiement
+- Inscription aux cours avec suivi de progression
+
+## Notes techniques
+
+### Redirections JavaScript
+
+Pour éviter les problèmes de "headers already sent", l'application utilise des redirections JavaScript au lieu de la fonction PHP `header()`. Cette approche est implémentée dans les fichiers suivants :
+
+```php
+// Exemple de redirection JavaScript
+echo "<script>window.location.href = 'page.php';</script>";
+echo "<div style='background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; padding: 10px; margin: 10px;'>Message de succès. Redirection en cours...</div>";
+die();
+```
+
+### Fichiers avec redirection JavaScript
+
+- `logout.php` - Déconnexion utilisateur
+- `admin/admin_logout.php` - Déconnexion administrateur
+- `update_settings_process.php` - Mise à jour des paramètres utilisateur
+- `edit_profil_process.php` - Modification du profil utilisateur
+- `change_password_process.php` - Changement de mot de passe
+- `admin/admin_login_process.php` - Connexion administrateur
+- `register.php` - Inscription utilisateur
+- `view_cours.php` - Affichage des détails d'un cours
+- `inscription_cours.php` - Inscription à un cours

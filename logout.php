@@ -29,13 +29,41 @@ if (ini_get("session.use_cookies")) {
 session_destroy();
 
 // 4. Rediriger vers la page d'accueil avec un message de succès.
-// BASE_URL est normalement défini dans config.php.
-if (defined('BASE_URL')) {
-    header("Location: " . BASE_URL . "/accueil.php?logout=success");
-} else {
-    // Fallback au cas où BASE_URL ne serait pas défini (ne devrait pas arriver).
-    error_log("BASE_URL non défini dans logout.php. Redirection vers accueil.php relatif.");
-    header("Location: accueil.php?logout=success");
-}
-exit; // Assurer qu'aucun autre code n'est exécuté après la redirection.
+// Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
 ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Déconnexion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px auto;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-message">
+        <h2>Déconnexion réussie</h2>
+        <p>Vous avez été déconnecté avec succès.</p>
+        <p>Vous allez être redirigé vers la page d'accueil dans quelques secondes...</p>
+    </div>
+    
+    <script>
+        // Redirection après 2 secondes
+        setTimeout(function() {
+            window.location.href = 'index.php?logout=success';
+        }, 2000);
+    </script>
+</body>
+</html>

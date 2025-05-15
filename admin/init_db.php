@@ -175,6 +175,30 @@ ON CONFLICT (id) DO NOTHING;";
 
 executeQuery($pdo, $sql_insert_cours, "Insertion des cours de test");
 
+// Création de la table inscriptions
+$sql_inscriptions = "
+CREATE TABLE IF NOT EXISTS inscriptions (
+    id SERIAL PRIMARY KEY,
+    id_utilisateur INTEGER NOT NULL REFERENCES utilisateurs(id) ON DELETE CASCADE,
+    id_cours INTEGER NOT NULL REFERENCES cours(id) ON DELETE CASCADE,
+    date_inscription TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    progres INTEGER DEFAULT 0,
+    statut VARCHAR(20) DEFAULT 'actif',
+    UNIQUE(id_utilisateur, id_cours)
+);";
+
+executeQuery($pdo, $sql_inscriptions, "Création de la table inscriptions");
+
+// Insertion de données de test pour les inscriptions
+$sql_insert_inscriptions = "
+INSERT INTO inscriptions (id_utilisateur, id_cours, date_inscription, progres, statut) VALUES 
+(1, 1, CURRENT_TIMESTAMP - INTERVAL '10 days', 75, 'actif'),
+(1, 2, CURRENT_TIMESTAMP - INTERVAL '5 days', 30, 'actif'),
+(1, 3, CURRENT_TIMESTAMP - INTERVAL '2 days', 10, 'actif')
+ON CONFLICT (id_utilisateur, id_cours) DO NOTHING;";
+
+executeQuery($pdo, $sql_insert_inscriptions, "Insertion des inscriptions de test");
+
 // Insertion d'un utilisateur de test (mot de passe: Test123!)
 $password_hash = password_hash('Test123!', PASSWORD_DEFAULT);
 $sql_insert_user = "

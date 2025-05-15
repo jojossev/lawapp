@@ -3,8 +3,10 @@ require_once 'includes/config.php'; // Contient db_connect.php et session_start
 
 // Vérifier si l'utilisateur est connecté et si la requête est POST
 if (!isset($_SESSION['user_id']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: login.php');
-    exit;
+    // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+    echo "<script>window.location.href = 'login.php';</script>";
+    echo "<div style='background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; padding: 10px; margin: 10px;'>Accès non autorisé. Redirection en cours...</div>";
+    die();
 }
 
 $user_id = (int)$_SESSION['user_id'];
@@ -39,7 +41,59 @@ try {
     $_SESSION['error_message'] = "Une erreur technique est survenue. Veuillez réessayer.";
 }
 
-// Rediriger vers la page de profil
-header('Location: profil.php');
-exit;
+// Rediriger vers la page de profil avec JavaScript
 ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mise à jour des paramètres</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .message {
+            padding: 15px;
+            margin: 20px auto;
+            max-width: 500px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <?php if (isset($_SESSION['success_message'])): ?>
+    <div class="message success">
+        <h2>Paramètres mis à jour</h2>
+        <p><?php echo htmlspecialchars($_SESSION['success_message']); ?></p>
+    </div>
+    <?php elseif (isset($_SESSION['error_message'])): ?>
+    <div class="message error">
+        <h2>Erreur</h2>
+        <p><?php echo htmlspecialchars($_SESSION['error_message']); ?></p>
+    </div>
+    <?php else: ?>
+    <div class="message success">
+        <h2>Traitement terminé</h2>
+        <p>Redirection vers votre profil...</p>
+    </div>
+    <?php endif; ?>
+    
+    <script>
+        // Redirection après 2 secondes
+        setTimeout(function() {
+            window.location.href = 'profil.php';
+        }, 2000);
+    </script>
+</body>
+</html>

@@ -35,9 +35,9 @@ try {
         
         // Afficher les livres
         if ($count > 0) {
-            $sql = "SELECT l.*, c.nom as categorie_nom 
+            $sql = "SELECT l.*, cl.nom as categorie_nom 
                    FROM livres l
-                   LEFT JOIN categories_cours c ON l.categorie_id = c.id";
+                   LEFT JOIN categories_livres cl ON l.id_categorie = cl.id";
             $stmt = $pdo->prepare($sql);
             $stmt->execute();
             $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
