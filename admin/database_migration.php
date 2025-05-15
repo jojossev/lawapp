@@ -144,7 +144,8 @@ try {
             description TEXT,
             id_categorie INT,
             prix DECIMAL(10, 2),
-            disponible BOOLEAN DEFAULT TRUE
+            disponible BOOLEAN DEFAULT TRUE,
+            image_url VARCHAR(255)
         ",
         'categories_podcasts' => "
             CREATE TABLE __ID_COLUMN__,
@@ -157,7 +158,16 @@ try {
             description TEXT,
             id_categorie INT,
             duree INT,
-            audio_url VARCHAR(255)
+            audio_url VARCHAR(255),
+            image_url VARCHAR(255)
+        ",
+        'videos' => "
+            CREATE TABLE __ID_COLUMN__,
+            titre VARCHAR(255) NOT NULL,
+            description TEXT,
+            id_createur INT,
+            duree INT,
+            video_url VARCHAR(255)
         "
     ];
 
