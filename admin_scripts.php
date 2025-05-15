@@ -30,6 +30,7 @@ require_once 'includes/header.php';
                 <a href="fix_render.php" class="btn btn-primary">Corriger Render</a>
                 <a href="test_db_connection.php" class="btn btn-primary">Test DB Connection</a>
                 <a href="test_pg_connection.php" class="btn btn-primary">Test PostgreSQL</a>
+                <a href="debug_postgres.php" class="btn btn-primary" style="font-weight: bold; background-color: #dc3545;">Diagnostic PostgreSQL</a>
                 <a href="test_render.php" class="btn btn-info">Test Render</a>
                 <a href="debug_render.php" class="btn btn-info">Debug Render</a>
                 <a href="check_admin_path.php" class="btn btn-info">Vérifier Admin</a>
@@ -43,6 +44,7 @@ require_once 'includes/header.php';
         <div class="section">
             <h2>Scripts de correction spécifiques</h2>
             <div class="links-grid">
+                <a href="fix_database_name.php" class="btn btn-primary" style="font-weight: bold; font-size: 1.2em; background-color: #dc3545;">CORRIGER NOM BASE DE DONNÉES</a>
                 <a href="fix_all_issues.php" class="btn btn-primary" style="font-weight: bold; font-size: 1.2em; background-color: #007bff;">CORRIGER TOUS LES PROBLÈMES</a>
                 <a href="add_column_id_categorie.php" class="btn">Ajouter colonne id_categorie</a>
                 <a href="create_categories_tables.php" class="btn">Créer tables catégories</a>
