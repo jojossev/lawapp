@@ -45,6 +45,7 @@ if (isset($_SESSION['user_prenom'])) {
                     <a href="test_sessions.php" class="btn btn-info">Test Sessions</a>
                     <a href="check_render_sessions.php" class="btn btn-info">Sessions Render</a>
                     <a href="test_redirections.php" class="btn btn-info">Test Redirections</a>
+                    <a href="fix_postgres_tables.php" class="btn btn-warning">Fix PostgreSQL Tables</a>
                 </div>
             </div>
             

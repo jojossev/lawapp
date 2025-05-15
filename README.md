@@ -218,6 +218,7 @@ Si vous rencontrez des erreurs SQL du type "relation does not exist" ou "undefin
    - `fix_files_permissions.php` - Vérifie et corrige les problèmes de fichiers et permissions
    - `fix_redirections.php` - Vérifie et corrige les redirections HTTP en les remplaçant par des redirections JavaScript
    - `fix_inscriptions_table.php` - Vérifie et crée la table des inscriptions aux cours
+   - `fix_postgres_tables.php` - Crée et corrige les tables spécifiquement pour PostgreSQL
 
 5. **Scripts de test et diagnostic** :
    - `test_sessions.php` - Teste la création et la persistance des sessions et cookies
