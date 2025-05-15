@@ -8,8 +8,10 @@ error_reporting(E_ALL);
 function showMessage($message, $type = 'info') {
     $class = ($type == 'success') ? 'success' : (($type == 'error') ? 'error' : 'info');
     echo "<p class='$class'>$message</p>";
-    ob_flush();
-    flush();
+    if (ob_get_level() > 0) {
+        ob_flush();
+        flush();
+    }
 }
 
 // Fonction pour vérifier si une table existe
@@ -60,11 +62,20 @@ try {
     $host = $url['host'] ?? 'localhost';
     $port = $url['port'] ?? '5432';
     $dbname = ltrim($url['path'] ?? '', '/');
+    
+    // Correction pour le problème de nom de base de données avec underscore à la fin
+    if (substr($dbname, -1) === '_') {
+        $dbname = substr($dbname, 0, -1);
+    }
+    
     $user = $url['user'] ?? '';
     $password = $url['pass'] ?? '';
     
     // Construire le DSN pour PostgreSQL
     $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+    
+    // Afficher les informations de connexion (uniquement pour le débogage)
+    showMessage("Tentative de connexion à : Host=$host, Port=$port, DBName=$dbname, User=$user", 'info');
     
     // Tenter de se connecter
     $pdo = new PDO($dsn, $user, $password);
@@ -79,6 +90,8 @@ try {
 }
 
 // Début du HTML
+// Activer la mise en tampon de sortie au début du script
+ob_start();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
