@@ -1,16 +1,13 @@
 <?php
 require_once __DIR__ . '/config.php'; // Assure que config.php est inclus
 
-// Logique de changement de thème
+// Logique de changement de thème - sans redirection
 $current_theme = isset($_COOKIE['theme']) ? $_COOKIE['theme'] : 'light';
 if (isset($_GET['theme'])) {
     $new_theme = $_GET['theme'] === 'dark' ? 'dark' : 'light';
     setcookie('theme', $new_theme, time() + (86400 * 30), "/"); // Cookie pour 30 jours
     $current_theme = $new_theme;
-    // Nettoyer l'URL et appliquer le thème
-    $uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
-    header('Location: ' . $uri_parts[0]);
-    exit;
+    // Ne pas faire de redirection ici pour éviter les problèmes de headers
 }
 
 $site_name = "LawApp";

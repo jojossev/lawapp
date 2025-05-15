@@ -68,8 +68,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if ($stmt_insert_user->execute()) {
                 $_SESSION['registration_success'] = "Votre compte a été créé avec succès ! Vous pouvez maintenant vous connecter.";
-                header("Location: login.php?registration=success");
-                exit;
+                // Utiliser JavaScript pour la redirection au lieu de header() pour éviter les erreurs
+                $success_message = "Votre compte a été créé avec succès ! Vous allez être redirigé vers la page de connexion...";
+                echo "<script>setTimeout(function() { window.location.href = 'login.php?registration=success'; }, 2000);</script>";
+                // Ne pas utiliser exit ici
             } else {
                 $errors[] = "Une erreur s'est produite lors de la création de votre compte. Veuillez réessayer.";
             }

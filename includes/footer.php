@@ -20,6 +20,8 @@
                 <li><a href="faq.php">FAQ</a></li> <!-- page FAQ à créer -->
                 <li><a href="contact.php">Contactez-nous</a></li> <!-- page Contact à créer -->
                 <li><a href="mentions_legales.php">Mentions Légales</a></li> <!-- page Mentions Légales à créer -->
+                <li><a href="theme_switch.php?theme=light&redirect=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>" class="theme-switch light-theme">☀️</a></li>
+                <li><a href="theme_switch.php?theme=dark&redirect=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>" class="theme-switch dark-theme">🌙</a></li>
             </ul>
         </div>
         <div class="footer-section newsletter">
