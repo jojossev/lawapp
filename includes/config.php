@@ -8,7 +8,12 @@ error_reporting(E_ALL);
 define('ENVIRONMENT', getenv('ENVIRONMENT') ?: 'development');
 
 // URLs de l'application
-define('APP_URL', getenv('APP_URL') ?: 'http://localhost');
+// Si nous sommes sur Render et que APP_URL ne contient pas l'hostname externe correct, utiliser RENDER_EXTERNAL_URL
+if (getenv('RENDER') === 'true' && getenv('RENDER_EXTERNAL_URL') && strpos(getenv('APP_URL'), getenv('RENDER_EXTERNAL_HOSTNAME')) === false) {
+    define('APP_URL', getenv('RENDER_EXTERNAL_URL'));
+} else {
+    define('APP_URL', getenv('APP_URL') ?: 'http://localhost');
+}
 define('BASE_URL', rtrim(APP_URL, '/')); // Assure qu'il n'y a pas de slash à la fin
 
 // Configuration de la base de données
