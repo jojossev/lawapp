@@ -13,9 +13,10 @@ RewriteRule ^(.*)$ https://lawapp-a6er.onrender.com/$1 [R=301,L]
 # Gérer les erreurs 404
 ErrorDocument 404 /404.php
 
-# Forcer HTTPS
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# Forcer HTTPS (uniquement pour les environnements non-Render)
+# Render gère déjà HTTPS, donc nous ne l'activons pas ici
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Protéger les fichiers sensibles
 <FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak)$">
@@ -46,9 +47,9 @@ ExpiresByType image/x-icon "access plus 1 year"
 ExpiresDefault "access plus 2 days"
 </IfModule>
 
-# Forcer HTTPS
-RewriteCond %{HTTP:X-Forwarded-Proto} !https
-RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# Forcer HTTPS pour Render (commenté pour éviter les boucles de redirection)
+# RewriteCond %{HTTP:X-Forwarded-Proto} !https
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Protection des fichiers sensibles
 <FilesMatch "^\.(htaccess|htpasswd|ini|phps|fla|psd|log|sh)">
