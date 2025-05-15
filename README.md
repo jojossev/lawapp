@@ -222,9 +222,10 @@ Si vous rencontrez des erreurs SQL du type "relation does not exist" ou "undefin
 
 5. **Scripts de test et diagnostic** :
    - `test_sessions.php` - Teste la création et la persistance des sessions et cookies
-   - `check_render_sessions.php` - Vérifie l'état des sessions sur Render
-   - `test_inscriptions.php` - Affiche les inscriptions aux cours avec les informations des utilisateurs et des cours
    - `test_redirections.php` - Teste les redirections HTTP et affiche les en-têtes de réponse
+   - `admin_scripts.php` - Page centralisée pour accéder à tous les scripts de diagnostic et correction
+   - `test_inscriptions.php` - Affiche les inscriptions aux cours avec les informations des utilisateurs et des cours
+   - `check_render_sessions.php` - Vérifie l'état des sessions sur Render
 
 6. **Scripts globaux** :
    - `fix_all_issues.php` - Exécute tous les scripts de correction en séquence avec une barre de progression

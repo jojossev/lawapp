@@ -40,6 +40,7 @@ if (isset($_SESSION['user_prenom'])) {
                     <a href="podcasts.php" class="btn">Podcasts</a>
                     <a href="cours.php" class="btn">Cours</a>
                     <a href="admin/login.php" class="btn">Admin</a>
+                    <a href="admin_scripts.php" class="btn btn-secondary" style="background-color: #6c757d; font-size: 0.8em;">Outils Admin</a>
                 </div>
             </div>
         </div>
