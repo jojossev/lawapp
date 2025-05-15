@@ -3,6 +3,7 @@
 ## 1. Base de données PostgreSQL
 
 ### Détails de la base de données
+
 - **Nom** : lawapp-db
 - **Type** : PostgreSQL
 - **Version** : 16
@@ -10,14 +11,16 @@
 - **Plan** : Free
 
 ### URL de connexion
-```
+
+```sql
 postgresql://lawapp_user:JqemXeIWprT3M3l7VxIti0DkS9qbMRFQ@dpg-d0ibffqdbo4c739c6jn0-a/lawapp
 ```
 
 ## 2. Application Web
 
 ### Configuration générale
-- **Nom** : lawapp
+
+- **Nom** : lawapp-a6er
 - **Type** : Web Service
 - **Runtime** : Docker
 - **Region** : Frankfurt (EU Central)
@@ -32,7 +35,7 @@ postgresql://lawapp_user:JqemXeIWprT3M3l7VxIti0DkS9qbMRFQ@dpg-d0ibffqdbo4c739c6j
 
 2. **APP_URL**
    - Key: `APP_URL`
-   - Value: `https://lawapp.onrender.com`
+   - Value: `${RENDER_EXTERNAL_URL}`
    - Description: URL de l'application en production
 
 3. **DATABASE_URL**
@@ -46,13 +49,14 @@ postgresql://lawapp_user:JqemXeIWprT3M3l7VxIti0DkS9qbMRFQ@dpg-d0ibffqdbo4c739c6j
 2. Dans l'interface Render, aller dans la section "Manual Deploy"
 3. Cliquer sur "Deploy Latest Commit"
 4. Attendre la fin du déploiement
-5. Vérifier l'application sur https://lawapp.onrender.com
+5. Vérifier l'application sur [https://lawapp-a6er.onrender.com](https://lawapp-a6er.onrender.com)
 
 ## 4. URLs importantes
 
-- **Application** : https://lawapp.onrender.com
-- **Test DB** : https://lawapp.onrender.com/test_db.php
-- **Init DB** : https://lawapp.onrender.com/init_db.php
+- **Application** : [https://lawapp-a6er.onrender.com](https://lawapp-a6er.onrender.com)
+- **Test DB** : [https://lawapp-a6er.onrender.com/test.php](https://lawapp-a6er.onrender.com/test.php)
+- **Debug** : [https://lawapp-a6er.onrender.com/debug.php](https://lawapp-a6er.onrender.com/debug.php)
+- **Init DB** : [https://lawapp-a6er.onrender.com/admin/init_db.php](https://lawapp-a6er.onrender.com/admin/init_db.php)
 
 ## 5. Notes importantes
 
