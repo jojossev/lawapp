@@ -50,6 +50,30 @@ CREATE TABLE IF NOT EXISTS categories_cours (
 
 executeQuery($pdo, $sql_categories_cours, "Création de la table categories_cours");
 
+// Création de la table categories_livres
+$sql_categories_livres = "
+CREATE TABLE IF NOT EXISTS categories_livres (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    description TEXT,
+    statut VARCHAR(20) DEFAULT 'actif',
+    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);";
+
+executeQuery($pdo, $sql_categories_livres, "Création de la table categories_livres");
+
+// Création de la table categories_podcasts
+$sql_categories_podcasts = "
+CREATE TABLE IF NOT EXISTS categories_podcasts (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    description TEXT,
+    statut VARCHAR(20) DEFAULT 'actif',
+    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);";
+
+executeQuery($pdo, $sql_categories_podcasts, "Création de la table categories_podcasts");
+
 // Création de la table cours
 $sql_cours = "
 CREATE TABLE IF NOT EXISTS cours (
@@ -97,26 +121,48 @@ CREATE TABLE IF NOT EXISTS livres (
     annee_publication INT,
     editeur VARCHAR(255),
     isbn VARCHAR(20),
-    categorie_id INT,
+    id_categorie INT,
     image_couverture VARCHAR(255),
     fichier_pdf VARCHAR(255),
     date_ajout TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     statut VARCHAR(20) DEFAULT 'actif',
-    FOREIGN KEY (categorie_id) REFERENCES categories_cours(id) ON DELETE SET NULL
+    FOREIGN KEY (id_categorie) REFERENCES categories_livres(id) ON DELETE SET NULL
 );";
 
 executeQuery($pdo, $sql_livres, "Création de la table livres");
 
-// Insertion de données de test pour les catégories
+// Insertion de données de test pour les catégories de cours
 $sql_insert_categories = "
 INSERT INTO categories_cours (nom, description, statut) VALUES 
-('Droit Civil', 'Fondements du droit civil, contrats, responsabilité...', 'actif'),
-('Droit Pénal', 'Principes du droit pénal, procédures, infractions...', 'actif'),
-('Droit des Affaires', 'Droit commercial, sociétés, concurrence...', 'actif'),
-('Droit Public', 'Droit administratif, constitutionnel...', 'actif')
+('Droit Civil', 'Cours sur les fondamentaux du droit civil', 'actif'),
+('Droit Pénal', 'Cours sur le droit pénal et la procédure pénale', 'actif'),
+('Droit des Affaires', 'Cours sur le droit commercial et des affaires', 'actif'),
+('Droit International', 'Cours sur le droit international public et privé', 'actif')
 ON CONFLICT (id) DO NOTHING;";
 
-executeQuery($pdo, $sql_insert_categories, "Insertion des catégories de test");
+executeQuery($pdo, $sql_insert_categories, "Insertion des catégories de cours de test");
+
+// Insertion de données de test pour les catégories de livres
+$sql_insert_categories_livres = "
+INSERT INTO categories_livres (nom, description, statut) VALUES 
+('Manuels Juridiques', 'Manuels et ouvrages de référence en droit', 'actif'),
+('Codes Annotés', 'Codes juridiques avec annotations et jurisprudence', 'actif'),
+('Essais Juridiques', 'Essais et analyses sur des questions juridiques', 'actif'),
+('Revues Spécialisées', 'Publications périodiques en droit', 'actif')
+ON CONFLICT (id) DO NOTHING;";
+
+executeQuery($pdo, $sql_insert_categories_livres, "Insertion des catégories de livres de test");
+
+// Insertion de données de test pour les catégories de podcasts
+$sql_insert_categories_podcasts = "
+INSERT INTO categories_podcasts (nom, description, statut) VALUES 
+('Actualités Juridiques', 'Podcasts sur les actualités récentes en droit', 'actif'),
+('Entretiens avec des Experts', 'Interviews de professionnels du droit', 'actif'),
+('Cas Pratiques', 'Analyses de cas juridiques concrets', 'actif'),
+('Débats Juridiques', 'Discussions sur des sujets juridiques controversés', 'actif')
+ON CONFLICT (id) DO NOTHING;";
+
+executeQuery($pdo, $sql_insert_categories_podcasts, "Insertion des catégories de podcasts de test");
 
 // Insertion de données de test pour les cours
 $sql_insert_cours = "
@@ -140,7 +186,7 @@ executeQuery($pdo, $sql_insert_user, "Insertion d'un utilisateur de test");
 
 // Insertion de livres de test
 $sql_insert_livres = "
-INSERT INTO livres (titre, auteur, description, annee_publication, editeur, isbn, categorie_id, statut) VALUES
+INSERT INTO livres (titre, auteur, description, annee_publication, editeur, isbn, id_categorie, statut) VALUES
 ('Introduction au Droit Civil', 'Jean Dupont', 'Un manuel complet sur les fondamentaux du droit civil.', 2022, 'Éditions Juridiques', '978-2-1234-5678-9', 1, 'actif'),
 ('Droit Pénal Contemporain', 'Marie Laurent', 'Analyse des évolutions récentes du droit pénal.', 2021, 'Presses Universitaires', '978-2-9876-5432-1', 2, 'actif'),
 ('Droit des Affaires', 'Pierre Martin', 'Guide pratique pour comprendre le droit des affaires.', 2023, 'Business Legal', '978-2-5555-7777-3', 3, 'actif')

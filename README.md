@@ -138,6 +138,13 @@ La base de données PostgreSQL contient les tables suivantes :
    - `fichier_pdf` - Lien vers le fichier PDF
    - `statut` - Statut du livre
 
+6. **categories_podcasts** - Catégories pour les podcasts
+   - `id` - Identifiant unique
+   - `nom` - Nom de la catégorie
+   - `description` - Description de la catégorie
+   - `statut` - Statut (actif, inactif)
+   - `date_creation` - Date de création
+
 ## Fonctionnalités
 - Gestion des cours juridiques
 - Bibliothèque de ressources juridiques
