@@ -87,6 +87,26 @@ CREATE TABLE IF NOT EXISTS utilisateurs (
 
 executeQuery($pdo, $sql_utilisateurs, "Création de la table utilisateurs");
 
+// Création de la table livres
+$sql_livres = "
+CREATE TABLE IF NOT EXISTS livres (
+    id SERIAL PRIMARY KEY,
+    titre VARCHAR(255) NOT NULL,
+    auteur VARCHAR(255) NOT NULL,
+    description TEXT,
+    annee_publication INT,
+    editeur VARCHAR(255),
+    isbn VARCHAR(20),
+    categorie_id INT,
+    image_couverture VARCHAR(255),
+    fichier_pdf VARCHAR(255),
+    date_ajout TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    statut VARCHAR(20) DEFAULT 'actif',
+    FOREIGN KEY (categorie_id) REFERENCES categories_cours(id) ON DELETE SET NULL
+);";
+
+executeQuery($pdo, $sql_livres, "Création de la table livres");
+
 // Insertion de données de test pour les catégories
 $sql_insert_categories = "
 INSERT INTO categories_cours (nom, description, statut) VALUES 
@@ -117,6 +137,16 @@ INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role) VALUES
 ON CONFLICT (email) DO NOTHING;";
 
 executeQuery($pdo, $sql_insert_user, "Insertion d'un utilisateur de test");
+
+// Insertion de livres de test
+$sql_insert_livres = "
+INSERT INTO livres (titre, auteur, description, annee_publication, editeur, isbn, categorie_id, statut) VALUES
+('Introduction au Droit Civil', 'Jean Dupont', 'Un manuel complet sur les fondamentaux du droit civil.', 2022, 'Éditions Juridiques', '978-2-1234-5678-9', 1, 'actif'),
+('Droit Pénal Contemporain', 'Marie Laurent', 'Analyse des évolutions récentes du droit pénal.', 2021, 'Presses Universitaires', '978-2-9876-5432-1', 2, 'actif'),
+('Droit des Affaires', 'Pierre Martin', 'Guide pratique pour comprendre le droit des affaires.', 2023, 'Business Legal', '978-2-5555-7777-3', 3, 'actif')
+ON CONFLICT (id) DO NOTHING;";
+
+executeQuery($pdo, $sql_insert_livres, "Insertion de livres de test");
 
 // Afficher le pied de page
 echo "
