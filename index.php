@@ -13,7 +13,7 @@ try {
     }
 } catch (PDOException $e) {
     // Gérer l'erreur, par exemple logger et/ou afficher un message discret
-    error_log("Erreur de chargement des catégories de cours sur accueil.php: " . $e->getMessage());
+    error_log("Erreur de chargement des catégories de cours sur index.php: " . $e->getMessage());
     // On pourrait initialiser avec des catégories par défaut ou un tableau vide
 }
 
@@ -150,7 +150,7 @@ if (isset($_SESSION['user_prenom'])) {
 
     <script>
         // Petit script pour la gestion des onglets de catégorie (simpliste)
-        // Ce script est spécifique à accueil.php, donc on le laisse ici pour l'instant.
+        // Ce script est spécifique à index.php, donc on le laisse ici pour l'instant.
         // Il pourrait être déplacé dans un fichier js/accueil.js et inclus par le footer si besoin.
         document.addEventListener('DOMContentLoaded', function() {
             const categoryTabs = document.querySelectorAll('.category-tabs button');
