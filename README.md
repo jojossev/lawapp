@@ -83,10 +83,60 @@
    - Version : 13 ou supérieur
    - Plan : Free
 
-5. Déployez l'application et initialisez la base de données en accédant à :
+5. Déployez l'application et initialisez la base de données en accédant à l'une des URLs suivantes :
+   - `https://votre-app.onrender.com/init_db_redirect.php` (recommandé)
    - `https://votre-app.onrender.com/admin/init_db.php`
 
-6. Pour plus de détails, consultez le fichier [RENDER_CONFIG.md](RENDER_CONFIG.md)
+6. Vous pouvez vérifier l'état des tables avec les scripts de diagnostic :
+   - `https://votre-app.onrender.com/test_utilisateurs.php` - Vérifie la table des utilisateurs
+   - `https://votre-app.onrender.com/test_livres.php` - Vérifie la table des livres
+
+7. Pour plus de détails, consultez le fichier [RENDER_CONFIG.md](RENDER_CONFIG.md)
+
+## Structure de la base de données
+
+La base de données PostgreSQL contient les tables suivantes :
+
+1. **utilisateurs** - Stocke les informations des utilisateurs
+   - `id` - Identifiant unique
+   - `nom`, `prenom` - Nom et prénom de l'utilisateur
+   - `email` - Adresse email (unique)
+   - `mot_de_passe` - Mot de passe hashé
+   - `role` - Rôle de l'utilisateur (admin, utilisateur, etc.)
+   - `date_inscription`, `derniere_connexion` - Dates d'inscription et de dernière connexion
+
+2. **categories_cours** - Catégories pour les cours
+   - `id` - Identifiant unique
+   - `nom` - Nom de la catégorie
+   - `description` - Description de la catégorie
+   - `statut` - Statut (actif, inactif)
+
+3. **cours** - Cours disponibles
+   - `id` - Identifiant unique
+   - `titre` - Titre du cours
+   - `description` - Description du cours
+   - `id_categorie` - Catégorie du cours (clé étrangère)
+   - `image` - Image du cours
+   - `statut` - Statut du cours
+
+4. **categories_livres** - Catégories pour les livres
+   - `id` - Identifiant unique
+   - `nom` - Nom de la catégorie
+   - `description` - Description de la catégorie
+   - `statut` - Statut (actif, inactif)
+
+5. **livres** - Livres juridiques
+   - `id` - Identifiant unique
+   - `titre` - Titre du livre
+   - `auteur` - Auteur du livre
+   - `description` - Description du livre
+   - `annee_publication` - Année de publication
+   - `editeur` - Maison d'édition
+   - `isbn` - Numéro ISBN
+   - `id_categorie` - Catégorie du livre (clé étrangère)
+   - `image_couverture` - Image de couverture
+   - `fichier_pdf` - Lien vers le fichier PDF
+   - `statut` - Statut du livre
 
 ## Fonctionnalités
 - Gestion des cours juridiques
