@@ -19,18 +19,20 @@ function columnExists($pdo, $table, $column) {
     try {
         // Pour PostgreSQL
         if (strpos(DB_URL, 'pgsql') !== false) {
-            $sql = "SELECT column_name FROM information_schema.columns 
-                    WHERE table_name = :table AND column_name = :column";
+            $sql = "SELECT EXISTS (SELECT 1 FROM information_schema.columns 
+                    WHERE table_name = :table AND column_name = :column)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['table' => $table, 'column' => $column]);
+            return $stmt->fetchColumn();
         } 
         // Pour MySQL
         else {
             $sql = "SELECT column_name FROM information_schema.columns 
                     WHERE table_schema = DATABASE() AND table_name = :table AND column_name = :column";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['table' => $table, 'column' => $column]);
+            return $stmt->rowCount() > 0;
         }
-        
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['table' => $table, 'column' => $column]);
-        return $stmt->rowCount() > 0;
     } catch (PDOException $e) {
         echo "<p style='color:red'>✗ Erreur lors de la vérification de la colonne: " . $e->getMessage() . "</p>";
         return false;
@@ -42,18 +44,20 @@ function tableExists($pdo, $table) {
     try {
         // Pour PostgreSQL
         if (strpos(DB_URL, 'pgsql') !== false) {
-            $sql = "SELECT table_name FROM information_schema.tables 
-                    WHERE table_name = :table";
+            $sql = "SELECT EXISTS (SELECT 1 FROM information_schema.tables 
+                    WHERE table_name = :table)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['table' => $table]);
+            return $stmt->fetchColumn();
         } 
         // Pour MySQL
         else {
             $sql = "SELECT table_name FROM information_schema.tables 
                     WHERE table_schema = DATABASE() AND table_name = :table";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['table' => $table]);
+            return $stmt->rowCount() > 0;
         }
-        
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['table' => $table]);
-        return $stmt->rowCount() > 0;
     } catch (PDOException $e) {
         echo "<p style='color:red'>✗ Erreur lors de la vérification de la table: " . $e->getMessage() . "</p>";
         return false;

@@ -23,20 +23,16 @@ try {
         // Pour PostgreSQL
         if (strpos(DB_URL, 'pgsql') !== false) {
             $sql = "SELECT EXISTS (
-                SELECT FROM information_schema.tables 
+                SELECT 1 FROM information_schema.tables 
                 WHERE table_name = 'livres'
             )";
+            $stmt = $pdo->query($sql);
+            $table_exists = $stmt->fetchColumn();
         } 
         // Pour MySQL
         else {
             $sql = "SHOW TABLES LIKE 'livres'";
-        }
-        
-        $stmt = $pdo->query($sql);
-        
-        if (strpos(DB_URL, 'pgsql') !== false) {
-            $table_exists = $stmt->fetchColumn();
-        } else {
+            $stmt = $pdo->query($sql);
             $table_exists = $stmt->rowCount() > 0;
         }
     } catch (PDOException $e) {
@@ -95,20 +91,16 @@ try {
             // Pour PostgreSQL
             if (strpos(DB_URL, 'pgsql') !== false) {
                 $sql = "SELECT EXISTS (
-                    SELECT FROM information_schema.columns 
+                    SELECT 1 FROM information_schema.columns 
                     WHERE table_name = 'livres' AND column_name = 'id_categorie'
                 )";
+                $stmt = $pdo->query($sql);
+                $column_exists = $stmt->fetchColumn();
             } 
             // Pour MySQL
             else {
                 $sql = "SHOW COLUMNS FROM livres LIKE 'id_categorie'";
-            }
-            
-            $stmt = $pdo->query($sql);
-            
-            if (strpos(DB_URL, 'pgsql') !== false) {
-                $column_exists = $stmt->fetchColumn();
-            } else {
+                $stmt = $pdo->query($sql);
                 $column_exists = $stmt->rowCount() > 0;
             }
         } catch (PDOException $e) {
