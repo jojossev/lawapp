@@ -5,71 +5,74 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/../includes/config.php';
 
-// Fonction pour vérifier si une table existe
-function tableExists(PDO $pdo, string $table) {
-    try {
-        $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-        
-        if ($driver_name === 'pgsql') {
-            $stmt = $pdo->prepare("
-                SELECT EXISTS (
-                    SELECT 1 FROM information_schema.tables 
-                    WHERE table_schema = 'public' AND table_name = :table
-                )
-            ");
-            $stmt->execute([':table' => $table]);
-        } else {
-            $stmt = $pdo->prepare("
-                SELECT COUNT(*) 
-                FROM information_schema.tables 
-                WHERE table_schema = DATABASE() AND table_name = :table
-            ");
-            $stmt->execute([':table' => $table]);
+// Fonctions de vérification de table et colonne
+if (!function_exists('tableExists')) {
+    function tableExists(PDO $pdo, string $table) {
+        try {
+            $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+            
+            if ($driver_name === 'pgsql') {
+                $stmt = $pdo->prepare("
+                    SELECT EXISTS (
+                        SELECT 1 FROM information_schema.tables 
+                        WHERE table_schema = 'public' AND table_name = :table
+                    )
+                ");
+                $stmt->execute([':table' => $table]);
+            } else {
+                $stmt = $pdo->prepare("
+                    SELECT COUNT(*) 
+                    FROM information_schema.tables 
+                    WHERE table_schema = DATABASE() AND table_name = :table
+                ");
+                $stmt->execute([':table' => $table]);
+            }
+            
+            return (bool)$stmt->fetchColumn();
+        } catch (PDOException $e) {
+            echo "Erreur lors de la vérification de la table: " . $e->getMessage();
+            return false;
         }
-        
-        return (bool)$stmt->fetchColumn();
-    } catch (PDOException $e) {
-        echo "Erreur lors de la vérification de la table: " . $e->getMessage();
-        return false;
     }
 }
 
-// Fonction pour vérifier si une colonne existe dans une table
-function columnExists(PDO $pdo, string $table, string $column) {
-    try {
-        $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-        
-        if ($driver_name === 'pgsql') {
-            $stmt = $pdo->prepare("
-                SELECT EXISTS (
-                    SELECT 1 FROM information_schema.columns 
-                    WHERE table_schema = 'public' 
+if (!function_exists('columnExists')) {
+    function columnExists(PDO $pdo, string $table, string $column) {
+        try {
+            $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+            
+            if ($driver_name === 'pgsql') {
+                $stmt = $pdo->prepare("
+                    SELECT EXISTS (
+                        SELECT 1 FROM information_schema.columns 
+                        WHERE table_schema = 'public' 
+                        AND table_name = :table 
+                        AND column_name = :column
+                    )
+                ");
+                $stmt->execute([
+                    ':table' => $table,
+                    ':column' => $column
+                ]);
+            } else {
+                $stmt = $pdo->prepare("
+                    SELECT COUNT(*) 
+                    FROM information_schema.columns 
+                    WHERE table_schema = DATABASE() 
                     AND table_name = :table 
                     AND column_name = :column
-                )
-            ");
-            $stmt->execute([
-                ':table' => $table,
-                ':column' => $column
-            ]);
-        } else {
-            $stmt = $pdo->prepare("
-                SELECT COUNT(*) 
-                FROM information_schema.columns 
-                WHERE table_schema = DATABASE() 
-                AND table_name = :table 
-                AND column_name = :column
-            ");
-            $stmt->execute([
-                ':table' => $table,
-                ':column' => $column
-            ]);
+                ");
+                $stmt->execute([
+                    ':table' => $table,
+                    ':column' => $column
+                ]);
+            }
+            
+            return (bool)$stmt->fetchColumn();
+        } catch (PDOException $e) {
+            echo "<p class='error'>Erreur lors de la vérification de la colonne: " . $e->getMessage() . "</p>";
+            return false;
         }
-        
-        return (bool)$stmt->fetchColumn();
-    } catch (PDOException $e) {
-        echo "<p class='error'>Erreur lors de la vérification de la colonne: " . $e->getMessage() . "</p>";
-        return false;
     }
 }
 
@@ -230,129 +233,6 @@ echo "<style>
     th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
 </style>";
 
-require_once __DIR__ . '/../includes/config.php';
-
-// Fonction pour vérifier si une table existe
-function tableExists(PDO $pdo, string $table) {
-    try {
-        $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-        
-        if ($driver_name === 'pgsql') {
-            $stmt = $pdo->prepare("
-                SELECT EXISTS (
-                    SELECT 1 FROM information_schema.tables 
-                    WHERE table_schema = 'public' AND table_name = :table
-                )
-            ");
-            $stmt->execute([':table' => $table]);
-        } else {
-            $stmt = $pdo->prepare("
-                SELECT COUNT(*) 
-                FROM information_schema.tables 
-                WHERE table_schema = DATABASE() AND table_name = :table
-            ");
-            $stmt->execute([':table' => $table]);
-        }
-        
-        return (bool)$stmt->fetchColumn();
-    } catch (PDOException $e) {
-        echo "Erreur lors de la vérification de la table: " . $e->getMessage();
-        return false;
-    }
-}
-
-// Fonction pour vérifier si une colonne existe dans une table
-function columnExists(PDO $pdo, string $table, string $column) {
-    try {
-        $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-        
-        if ($driver_name === 'pgsql') {
-            $stmt = $pdo->prepare("
-                SELECT EXISTS (
-                    SELECT 1 FROM information_schema.columns 
-                    WHERE table_schema = 'public' 
-                    AND table_name = :table 
-                    AND column_name = :column
-                )
-            ");
-            $stmt->execute([
-                ':table' => $table,
-                ':column' => $column
-            ]);
-        } else {
-            $stmt = $pdo->prepare("
-                SELECT COUNT(*) 
-                FROM information_schema.columns 
-                WHERE table_schema = DATABASE() 
-                AND table_name = :table 
-                AND column_name = :column
-            ");
-            $stmt->execute([
-                ':table' => $table,
-                ':column' => $column
-            ]);
-        }
-        
-        return (bool)$stmt->fetchColumn();
-    } catch (PDOException $e) {
-        echo "<p class='error'>Erreur lors de la vérification de la colonne: " . $e->getMessage() . "</p>";
-        return false;
-    }
-}
-
-try {
-    // Récupération dynamique du nom de base de données
-    $database_name = null;
-    if (defined('DATABASE_URL')) {
-        $parsed_url = parse_url(DATABASE_URL);
-        $database_name = ltrim($parsed_url['path'], '/');
-    } elseif (getenv('DATABASE_URL')) {
-        $parsed_url = parse_url(getenv('DATABASE_URL'));
-        $database_name = ltrim($parsed_url['path'], '/');
-    }
-    $database_name = $database_name ?? 'lawapp';
-
-    // Déterminer le driver de base de données
-    $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-
-    // 1. Vérifier si la table cours existe
-    echo "<h2>1. Vérification de la table cours</h2>";
-    
-    if (!tableExists($pdo, 'cours')) {
-        echo "<p class='warning'>La table 'cours' n'existe pas. Création en cours...</p>";
-        
-        // Création de la table cours
-        $createTableQuery = $driver_name === 'pgsql' ? "
-            CREATE TABLE cours (
-                id SERIAL PRIMARY KEY,
-                titre VARCHAR(255) NOT NULL,
-                description TEXT,
-                categorie_id INT,
-                duree INT,
-                niveau VARCHAR(50),
-                prix DECIMAL(10, 2),
-                date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        " : "
-            CREATE TABLE cours (
-                id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                titre VARCHAR(255) NOT NULL,
-                description TEXT,
-                categorie_id INT,
-                duree INT,
-                niveau VARCHAR(50),
-                prix DECIMAL(10, 2),
-                date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            ) ENGINE=InnoDB;
-        ";
-        
-        $pdo->exec($createTableQuery);
-        echo "<p class='success'>Table 'cours' créée avec succès.</p>";
-    }
-
-    // 2. Vérifier et ajouter les colonnes manquantes
     echo "<h2>2. Vérification des colonnes de la table cours</h2>";
     
     $colonnes = [
