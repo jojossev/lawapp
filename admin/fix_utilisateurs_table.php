@@ -35,14 +35,17 @@ function tableExists(PDO $pdo, string $table) {
         $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
         
         // Extraire dynamiquement le nom de la base de données
-        $database_url = defined('DATABASE_URL') ? DATABASE_URL : getenv('DATABASE_URL');
-        
-        if (empty($database_url)) {
-            // Fallback si aucune URL n'est définie
-            $db_name = 'lawapp_';
-        } else {
-            $parsed_url = parse_url($database_url);
+        if (defined('DB_NAME')) {
+            $db_name = DB_NAME;
+        } elseif (defined('DATABASE_URL')) {
+            $parsed_url = parse_url(DATABASE_URL);
             $db_name = ltrim($parsed_url['path'], '/');
+        } else {
+            $db_name = $pdo->query('SELECT DATABASE()')->fetchColumn();
+        }
+        
+        if (empty($db_name)) {
+            $db_name = 'lawapp_';
         }
         
         if ($driver_name === 'pgsql') {
