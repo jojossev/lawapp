@@ -5,6 +5,17 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/../includes/config.php';
 
+// Ajout de style CSS
+echo "<style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    h2 { color: #333; }
+    .success { color: green; }
+    .warning { color: orange; }
+    .error { color: red; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+</style>";
+
 // Fonctions de vérification de table et colonne
 if (!function_exists('tableExists')) {
     function tableExists(PDO $pdo, string $table) {
