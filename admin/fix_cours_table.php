@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../includes/config.php';
 
 // Initialisation des variables
-$messages = [];
+$messages = array();
 $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
 
 // Requête de vérification de l'existence de la table
@@ -50,11 +50,11 @@ if (!$table_exists) {
 }
 
 // Liste des colonnes à vérifier et ajouter
-$columns = [
+$columns = array(
     'categorie_id' => 'INT',
     'niveau' => 'VARCHAR(50)',
     'prix' => 'DECIMAL(10, 2)'
-];
+);
 
 // Ajout des colonnes manquantes
 foreach ($columns as $column => $type) {
@@ -84,11 +84,11 @@ echo "<!DOCTYPE html>
 <body>";
 
 echo "<h2>Résultat de la correction</h2>";
-if (empty($messages)) {
+if (count($messages) === 0) {
     echo "<p class='success'>Aucune modification nécessaire pour la table 'cours'.</p>";
 } else {
     foreach ($messages as $message) {
-        echo "<p class='success'>$message</p>";
+        echo "<p class='success">$message</p>";
     }
 }
 
