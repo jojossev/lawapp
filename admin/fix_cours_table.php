@@ -7,6 +7,14 @@ error_reporting(E_ALL);
 // Inclusion de la configuration
 require_once __DIR__ . '/../includes/config.php';
 
+// Démarrage de la sortie HTML
+echo "<!DOCTYPE html>
+<html>
+<head>
+<title>Correction de la table cours</title>
+</head>
+<body>";
+
 // Fonctions utilitaires pour la gestion de la base de données
 class DatabaseHelper {
     private $pdo;
@@ -336,12 +344,9 @@ echo "<style>
 // Exécution de la correction de la table
 try {
     fixCoursTable($pdo);
-} catch (PDOException $e) {
-    echo "<p class='error'>Erreur globale : " . $e->getMessage() . "</p>";
-}
-
-    // 5. Vérification finale et message de conclusion
-    echo "<h2>5. Résumé de la correction</h2>";
+    
+    // Vérification finale et message de conclusion
+    echo "<h2>Résumé de la correction</h2>";
     echo "<p class='success'>La table 'cours' a été vérifiée et corrigée avec succès.</p>";
     echo "<p>Les étapes suivantes ont été effectuées :</p>";
     echo "<ul>";
@@ -351,6 +356,9 @@ try {
     echo "<li>Affichage de la structure de la table</li>";
     echo "</ul>";
     echo "<p class='warning'>Note : Assurez-vous de vérifier manuellement la base de données pour confirmer les modifications.</p>";
+} catch (PDOException $e) {
+    echo "<p class='error'>Erreur globale : " . $e->getMessage() . "</p>";
+}
 
 echo "</body>
 </html>";
@@ -360,14 +368,13 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/../includes/config.php';
-    $database_name = null;
-    if (defined('DATABASE_URL')) {
-        $parsed_url = parse_url(DATABASE_URL);
-        $database_name = ltrim($parsed_url['path'], '/');
-    } elseif (getenv('DATABASE_URL')) {
-        $parsed_url = parse_url(getenv('DATABASE_URL'));
-        $database_name = ltrim($parsed_url['path'], '/');
-    }
+$database_name = null;
+if (defined('DATABASE_URL')) {
+    $parsed_url = parse_url(DATABASE_URL);
+    $database_name = ltrim($parsed_url['path'], '/');
+} elseif (getenv('DATABASE_URL')) {
+    $parsed_url = parse_url(getenv('DATABASE_URL'));
+    $database_name = ltrim($parsed_url['path'], '/');
     $database_name = $database_name ?? 'lawapp';
 
     // Déterminer le driver de base de données
