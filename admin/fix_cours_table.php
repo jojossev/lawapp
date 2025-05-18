@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 // Inclusion de la configuration
 require_once __DIR__ . '/../includes/config.php';
 
-// Démarrage de la sortie HTML
+// Fonction pour afficher l'en-tête HTML
 function displayHeader() {
     echo "<!DOCTYPE html>
 <html>
@@ -26,6 +26,112 @@ function displayHeader() {
 </head>
 <body>";
 }
+
+// Fonction principale de correction
+function correctCoursTable(PDO $pdo) {
+    $output = [];
+    
+    try {
+        $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $database_name = defined('DATABASE_URL') 
+            ? ltrim(parse_url(DATABASE_URL)['path'], '/') 
+            : (getenv('DATABASE_URL') ? ltrim(parse_url(getenv('DATABASE_URL'))['path'], '/') : 'lawapp');
+
+        // Vérification de l'existence de la table
+        $check_table_query = $driver_name === 'pgsql' 
+            ? "SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'cours')" 
+            : "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'cours'";
+        
+        $table_exists = $pdo->query($check_table_query)->fetchColumn();
+        
+        if (!$table_exists) {
+            // Création de la table
+            $create_table_query = $driver_name === 'pgsql' ? "
+                CREATE TABLE cours (
+                    id SERIAL PRIMARY KEY,
+                    titre VARCHAR(255) NOT NULL,
+                    description TEXT,
+                    categorie_id INT,
+                    duree INT,
+                    niveau VARCHAR(50),
+                    prix DECIMAL(10, 2),
+                    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            " : "
+                CREATE TABLE cours (
+                    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    titre VARCHAR(255) NOT NULL,
+                    description TEXT,
+                    categorie_id INT,
+                    duree INT,
+                    niveau VARCHAR(50),
+                    prix DECIMAL(10, 2),
+                    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB;
+            ";
+            
+            $pdo->exec($create_table_query);
+            $output[] = "<p class='success'>Table 'cours' créée avec succès.</p>";
+        }
+
+        // Vérification et ajout des colonnes
+        $columns_to_check = [
+            'categorie_id' => 'INT',
+            'niveau' => 'VARCHAR(50)',
+            'prix' => 'DECIMAL(10, 2)'
+        ];
+
+        foreach ($columns_to_check as $column => $type) {
+            $check_column_query = $driver_name === 'pgsql' 
+                ? "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'cours' AND column_name = '$column')" 
+                : "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'cours' AND column_name = '$column'";
+            
+            $column_exists = $pdo->query($check_column_query)->fetchColumn();
+            
+            if (!$column_exists) {
+                $add_column_query = "ALTER TABLE cours ADD COLUMN $column $type";
+                $pdo->exec($add_column_query);
+                $output[] = "<p class='success'>Colonne '$column' ajoutée.</p>";
+            }
+        }
+
+        // Création de l'index
+        $index_query = $driver_name === 'pgsql' 
+            ? "SELECT COUNT(*) FROM pg_indexes WHERE tablename = 'cours' AND indexdef LIKE '%categorie_id%'" 
+            : "SELECT COUNT(*) FROM information_schema.table_constraints WHERE table_schema = '$database_name' AND table_name = 'cours' AND constraint_type = 'INDEX' AND constraint_name LIKE '%categorie_id%'";
+        
+        $index_exists = $pdo->query($index_query)->fetchColumn();
+        
+        if (!$index_exists) {
+            $create_index_query = "CREATE INDEX cours_categorie_idx ON cours (categorie_id)";
+            $pdo->exec($create_index_query);
+            $output[] = "<p class='success'>Index sur 'categorie_id' créé.</p>";
+        }
+
+        return $output;
+    } catch (PDOException $e) {
+        return ["<p class='error'>Erreur : " . $e->getMessage() . "</p>"];
+    }
+}
+
+// Exécution principale
+displayHeader();
+
+// Correction de la table
+$correction_results = correctCoursTable($pdo);
+
+// Affichage des résultats
+echo "<h2>Résultat de la correction de la table cours</h2>";
+foreach ($correction_results as $result) {
+    echo $result;
+}
+
+// Fermeture de la page HTML
+echo "</body>
+</html>";
+
 
 // Fonctions utilitaires pour la gestion de la base de données
 class DatabaseHelper {
