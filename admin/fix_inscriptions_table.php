@@ -168,10 +168,23 @@ try {
     // Vérifier la clé étrangère vers utilisateurs
     $sql = "
         SELECT COUNT(*) 
-        FROM information_schema.constraint_column_usage 
-        WHERE table_name = 'inscriptions' 
-        AND column_name = 'id_utilisateur' 
-        AND constraint_name = 'fk_utilisateur'
+        FROM (
+            SELECT 
+                ccu.constraint_name,
+                ccu.table_name,
+                ccu.column_name,
+                kcu.table_name as referenced_table_name,
+                kcu.column_name as referenced_column_name
+            FROM information_schema.constraint_column_usage ccu
+            JOIN information_schema.key_column_usage kcu 
+                ON ccu.constraint_name = kcu.constraint_name
+                AND ccu.table_name = kcu.table_name
+                AND ccu.column_name = kcu.column_name
+            WHERE ccu.table_name = 'inscriptions' 
+            AND ccu.column_name = 'id_utilisateur'
+            AND kcu.table_name = 'utilisateurs'
+            AND kcu.column_name = 'id'
+        ) as constraints
     ";
     
     if ($pdo->query($sql)->fetchColumn() === 0) {
@@ -190,10 +203,23 @@ try {
     // Vérifier la clé étrangère vers cours
     $sql = "
         SELECT COUNT(*) 
-        FROM information_schema.constraint_column_usage 
-        WHERE table_name = 'inscriptions' 
-        AND column_name = 'id_cours' 
-        AND constraint_name = 'fk_cours'
+        FROM (
+            SELECT 
+                ccu.constraint_name,
+                ccu.table_name,
+                ccu.column_name,
+                kcu.table_name as referenced_table_name,
+                kcu.column_name as referenced_column_name
+            FROM information_schema.constraint_column_usage ccu
+            JOIN information_schema.key_column_usage kcu 
+                ON ccu.constraint_name = kcu.constraint_name
+                AND ccu.table_name = kcu.table_name
+                AND ccu.column_name = kcu.column_name
+            WHERE ccu.table_name = 'inscriptions' 
+            AND ccu.column_name = 'id_cours'
+            AND kcu.table_name = 'cours'
+            AND kcu.column_name = 'id'
+        ) as constraints
     ";
     
     if ($pdo->query($sql)->fetchColumn() === 0) {
