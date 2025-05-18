@@ -264,20 +264,30 @@ try {
     // 3. Afficher la structure actuelle de la table utilisateurs
     echo "<h2>3. Structure actuelle de la table utilisateurs</h2>";
     
-    if (strpos(DB_URL, 'pgsql') !== false) {
-        // PostgreSQL
+    if ($driver_name === 'pgsql') {
         $sql = "
             SELECT column_name, data_type, character_maximum_length, column_default, is_nullable
             FROM information_schema.columns
-            WHERE table_name = 'utilisateurs'
+            WHERE table_schema = 'public' AND table_name = 'utilisateurs'
             ORDER BY ordinal_position
         ";
     } else {
         // MySQL
+        $database_name = null;
+        
+        // Essayer de récupérer le nom de la base de données
+        if (defined('DATABASE_URL')) {
+            $parsed_url = parse_url(DATABASE_URL);
+            $database_name = ltrim($parsed_url['path'], '/');
+        } elseif (getenv('DATABASE_URL')) {
+            $parsed_url = parse_url(getenv('DATABASE_URL'));
+            $database_name = ltrim($parsed_url['path'], '/');
+        }
+        
         $sql = "
             SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, COLUMN_DEFAULT, IS_NULLABLE
             FROM INFORMATION_SCHEMA.COLUMNS
-            WHERE TABLE_SCHEMA = '" . DB_NAME . "' AND TABLE_NAME = 'utilisateurs'
+            WHERE TABLE_SCHEMA = '" . ($database_name ?? 'lawapp') . "' AND TABLE_NAME = 'utilisateurs'
             ORDER BY ORDINAL_POSITION
         ";
     }
