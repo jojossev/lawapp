@@ -171,7 +171,7 @@ try {
         FROM information_schema.constraint_column_usage 
         WHERE table_name = 'inscriptions' 
         AND column_name = 'id_utilisateur' 
-        AND constraint_name LIKE 'fk_%'
+        AND constraint_name = 'fk_utilisateur'
     ";
     
     if ($pdo->query($sql)->fetchColumn() === 0) {
@@ -193,7 +193,7 @@ try {
         FROM information_schema.constraint_column_usage 
         WHERE table_name = 'inscriptions' 
         AND column_name = 'id_cours' 
-        AND constraint_name LIKE 'fk_%'
+        AND constraint_name = 'fk_cours'
     ";
     
     if ($pdo->query($sql)->fetchColumn() === 0) {
