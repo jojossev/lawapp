@@ -15,63 +15,61 @@ $table_check_query = $driver_name === 'pgsql'
     ? "SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'cours')" 
     : "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'cours'";
 
-    $table_exists = $pdo->query($table_check_query)->fetchColumn();
+$table_exists = $pdo->query($table_check_query)->fetchColumn();
 
-    if (!$table_exists) {
-        $create_table_query = $driver_name === 'pgsql' ? "
-            CREATE TABLE cours (
-                id SERIAL PRIMARY KEY,
-                titre VARCHAR(255) NOT NULL,
-                description TEXT,
-                categorie_id INT,
-                duree INT,
-                niveau VARCHAR(50),
-                prix DECIMAL(10, 2),
-                date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        " : "
-            CREATE TABLE cours (
-                id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                titre VARCHAR(255) NOT NULL,
-                description TEXT,
-                categorie_id INT,
-                duree INT,
-                niveau VARCHAR(50),
-                prix DECIMAL(10, 2),
-                date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            ) ENGINE=InnoDB;
-        ";
+// Création de la table si elle n'existe pas
+if (!$table_exists) {
+    $create_table_query = $driver_name === 'pgsql' ? "
+        CREATE TABLE cours (
+            id SERIAL PRIMARY KEY,
+            titre VARCHAR(255) NOT NULL,
+            description TEXT,
+            categorie_id INT,
+            duree INT,
+            niveau VARCHAR(50),
+            prix DECIMAL(10, 2),
+            date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+    " : "
+        CREATE TABLE cours (
+            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            titre VARCHAR(255) NOT NULL,
+            description TEXT,
+            categorie_id INT,
+            duree INT,
+            niveau VARCHAR(50),
+            prix DECIMAL(10, 2),
+            date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB;
+    ";
 
-        $pdo->exec($create_table_query);
-        $messages[] = "Table 'cours' créée avec succès.";
-    }
-
-    // Ajout des colonnes manquantes
-    $columns = [
-        'categorie_id' => 'INT',
-        'niveau' => 'VARCHAR(50)',
-        'prix' => 'DECIMAL(10, 2)'
-    ];
-
-    foreach ($columns as $column => $type) {
-        $check_column_query = $driver_name === 'pgsql' 
-            ? "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'cours' AND column_name = '$column')" 
-            : "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'cours' AND column_name = '$column'";
-
-        $column_exists = $pdo->query($check_column_query)->fetchColumn();
-
-        if (!$column_exists) {
-            $pdo->exec("ALTER TABLE cours ADD COLUMN $column $type");
-            $messages[] = "Colonne '$column' ajoutée.";
-        }
-    }
-
-    return $messages;
+    $pdo->exec($create_table_query);
+    $messages[] = "Table 'cours' créée avec succès.";
 }
 
-// Affichage HTML
+// Ajout des colonnes manquantes
+$columns = [
+    'categorie_id' => 'INT',
+    'niveau' => 'VARCHAR(50)',
+    'prix' => 'DECIMAL(10, 2)'
+];
+
+foreach ($columns as $column => $type) {
+    $column_check_query = $driver_name === 'pgsql' 
+        ? "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'cours' AND column_name = '$column')" 
+        : "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'cours' AND column_name = '$column'";
+
+    $column_exists = $pdo->query($column_check_query)->fetchColumn();
+
+    if (!$column_exists) {
+        $pdo->exec("ALTER TABLE cours ADD COLUMN $column $type");
+        $messages[] = "Colonne '$column' ajoutée.";
+    }
+}
+
+// Affichage des résultats
 echo "<!DOCTYPE html>
 <html>
 <head>
@@ -79,29 +77,17 @@ echo "<!DOCTYPE html>
 <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     .success { color: green; }
-    .error { color: red; }
 </style>
 </head>
 <body>";
 
-// Exécution de la correction
-$results = fixCoursTable($pdo);
-
 echo "<h2>Résultat de la correction</h2>";
-foreach ($results as $result) {
-    echo "<p class='success'>$result</p>";
+foreach ($messages as $message) {
+    echo "<p class='success'>$message</p>";
 }
 
 echo "</body>
 </html>";
-
-// Fonctions utilitaires pour la gestion de la base de données
-class DatabaseHelper {
-    private $pdo;
-    private $driver_name;
-    private $database_name;
-
-    public function __construct(PDO $pdo) {
         $this->pdo = $pdo;
         $this->driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
         $this->database_name = $this->getDatabaseName();
