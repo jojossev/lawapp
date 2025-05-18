@@ -219,33 +219,18 @@ try {
     echo "<p class='error'>Erreur : " . $e->getMessage() . "</p>";
 }
 
-// Style CSS pour une meilleure présentation
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Correction de la table cours</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        h2 { color: #333; }
-        .success { color: green; }
-        .warning { color: orange; }
-        .error { color: red; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    </style>
-</head>
-<body>
-    <!-- Le contenu a été généré précédemment -->
-</body>
-</html>
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// Ajout de style CSS
+echo "<style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    h2 { color: #333; }
+    .success { color: green; }
+    .warning { color: orange; }
+    .error { color: red; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+</style>";
 
 require_once __DIR__ . '/../includes/config.php';
-{{ ... }}
 
 // Fonction pour vérifier si une table existe
 function tableExists(PDO $pdo, string $table) {
