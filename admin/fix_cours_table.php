@@ -84,8 +84,12 @@ echo "<!DOCTYPE html>
 <body>";
 
 echo "<h2>Résultat de la correction</h2>";
-foreach ($messages as $message) {
-    echo "<p class='success'>$message</p>";
+if (empty($messages)) {
+    echo "<p class='success'>Aucune modification nécessaire pour la table 'cours'.</p>";
+} else {
+    foreach ($messages as $message) {
+        echo "<p class='success'>$message</p>";
+    }
 }
 
 echo "</body>
