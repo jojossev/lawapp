@@ -2,6 +2,61 @@
 require_once dirname(__DIR__) . '/includes/config.php';
 require_once dirname(__DIR__) . '/includes/db_connect.php';
 
+try {
+    // Vérifier le type de base de données
+    $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+    
+    // Requête adaptée pour PostgreSQL
+    if ($driver_name === 'pgsql') {
+        $alterQuery = "
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT column_name 
+                    FROM information_schema.columns 
+                    WHERE table_name = 'livres' AND column_name = 'image_url'
+                ) THEN
+                    ALTER TABLE livres ADD COLUMN image_url VARCHAR(255) DEFAULT 'default_book_image.jpg';
+                END IF;
+            END $$;
+        ";
+    } else {
+        // Requête pour MySQL
+        $alterQuery = "
+            ALTER TABLE livres 
+            ADD COLUMN IF NOT EXISTS image_url VARCHAR(255) DEFAULT 'default_book_image.jpg'
+        ";
+    }
+    
+    // Exécuter la requête
+    $pdo->exec($alterQuery);
+    
+    // Mettre à jour les enregistrements existants
+    $updateQuery = "
+        UPDATE livres 
+        SET image_url = 'default_book_image.jpg' 
+        WHERE image_url IS NULL OR image_url = ''
+    ";
+    $pdo->exec($updateQuery);
+    
+    // Afficher la structure de la table
+    $table_info_query = $driver_name === 'pgsql' 
+        ? "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'livres'"
+        : "DESCRIBE livres";
+    
+    $stmt = $pdo->query($table_info_query);
+    $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    echo "\nStructure actuelle de la table livres :\n";
+    echo "<pre>";
+    print_r($columns);
+    echo "</pre>";
+    
+    echo "Colonne image_url ajoutée et mise à jour avec succès.\n";
+} catch (PDOException $e) {
+    echo "Erreur : " . $e->getMessage() . "\n";
+}
+
 // Fonction pour ajouter une colonne de manière sécurisée
 function addColumnSafely($pdo, $table, $column, $type) {
     try {
