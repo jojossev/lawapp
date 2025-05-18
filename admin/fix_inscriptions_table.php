@@ -107,159 +107,136 @@ try {
                     id_utilisateur INT NOT NULL,
                     id_cours INT NOT NULL,
                     date_inscription TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    statut VARCHAR(50) DEFAULT 'actif',
-                    progression INT DEFAULT 0,
-                    date_derniere_activite TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    UNIQUE(id_utilisateur, id_cours)
+                    progres INT DEFAULT 0,
+                    statut VARCHAR(50) DEFAULT 'en_cours',
+                    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id),
+                    FOREIGN KEY (id_cours) REFERENCES cours(id)
                 )
             ";
         } else {
             // MySQL
             $sql = "
                 CREATE TABLE inscriptions (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     id_utilisateur INT NOT NULL,
                     id_cours INT NOT NULL,
                     date_inscription TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    statut VARCHAR(50) DEFAULT 'actif',
-                    progression INT DEFAULT 0,
-                    date_derniere_activite TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    UNIQUE(id_utilisateur, id_cours)
-                )
+                    progres INT DEFAULT 0,
+                    statut VARCHAR(50) DEFAULT 'en_cours',
+                    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id),
+                    FOREIGN KEY (id_cours) REFERENCES cours(id)
+                ) ENGINE=InnoDB
             ";
         }
         
         $pdo->exec($sql);
-        echo "<p class='success'>Table 'inscriptions' créée avec succès.</p>";
-        
-        // Vérifier si les tables utilisateurs et cours existent
-        $utilisateurs_exists = tableExists($pdo, 'utilisateurs');
-        $cours_exists = tableExists($pdo, 'cours');
-        
-        if ($utilisateurs_exists && $cours_exists) {
-            // Insérer des données de test
-            echo "<p>Insertion de données de test...</p>";
-            
-            // Récupérer quelques utilisateurs
-            $stmt = $pdo->query("SELECT id FROM utilisateurs LIMIT 3");
-            $utilisateurs = $stmt->fetchAll(PDO::FETCH_COLUMN);
-            
-            // Récupérer quelques cours
-            $stmt = $pdo->query("SELECT id FROM cours LIMIT 3");
-            $cours = $stmt->fetchAll(PDO::FETCH_COLUMN);
-            
-            if (count($utilisateurs) > 0 && count($cours) > 0) {
-                $inserted = 0;
-                
-                foreach ($utilisateurs as $id_utilisateur) {
-                    foreach ($cours as $id_cours) {
-                        try {
-                            $stmt = $pdo->prepare("
-                                INSERT INTO inscriptions (id_utilisateur, id_cours, statut, progression)
-                                VALUES (:id_utilisateur, :id_cours, :statut, :progression)
-                            ");
-                            
-                            $stmt->execute([
-                                ':id_utilisateur' => $id_utilisateur,
-                                ':id_cours' => $id_cours,
-                                ':statut' => 'actif',
-                                ':progression' => rand(0, 100)
-                            ]);
-                            
-                            $inserted++;
-                        } catch (PDOException $e) {
-                            // Ignorer les erreurs de duplication
-                            if (strpos($e->getMessage(), 'Duplicate entry') === false && 
-                                strpos($e->getMessage(), 'duplicate key') === false) {
-                                throw $e;
-                            }
-                        }
-                    }
-                }
-                
-                echo "<p class='success'>" . $inserted . " inscriptions de test insérées.</p>";
-            } else {
-                echo "<p class='warning'>Impossible d'insérer des données de test: pas assez d'utilisateurs ou de cours.</p>";
-            }
-        } else {
-            echo "<p class='warning'>Impossible d'insérer des données de test: les tables 'utilisateurs' ou 'cours' n'existent pas.</p>";
-        }
+        echo "<p class='success'>Table inscriptions créée avec succès</p>";
     } else {
-        echo "<p class='success'>La table 'inscriptions' existe déjà.</p>";
-        
-        // 2. Vérifier la structure de la table inscriptions
-        echo "<h2>2. Vérification de la structure de la table inscriptions</h2>";
-        
-        $required_columns = [
-            'id_utilisateur' => 'INT',
-            'id_cours' => 'INT',
-            'date_inscription' => 'TIMESTAMP',
-            'statut' => 'VARCHAR',
-            'progression' => 'INT',
-            'date_derniere_activite' => 'TIMESTAMP'
-        ];
-        
-        $missing_columns = [];
-        
-        foreach ($required_columns as $column => $type) {
-            if (!columnExists($pdo, 'inscriptions', $column)) {
-                $missing_columns[$column] = $type;
-            }
-        }
-        
-        if (count($missing_columns) > 0) {
-            echo "<p class='warning'>Certaines colonnes sont manquantes dans la table 'inscriptions'. Ajout en cours...</p>";
+        echo "<p class='info'>La table inscriptions existe déjà</p>";
+    }
+    
+    // 2. Vérifier et ajouter les colonnes manquantes
+    echo "<h2>2. Vérification des colonnes</h2>";
+    
+    $required_columns = [
+        'id' => 'INT',
+        'id_utilisateur' => 'INT',
+        'id_cours' => 'INT',
+        'date_inscription' => 'TIMESTAMP',
+        'progres' => 'INT',
+        'statut' => 'VARCHAR(50)'
+    ];
+
+    foreach ($required_columns as $column => $type) {
+        if (!columnExists($pdo, 'inscriptions', $column)) {
+            echo "<p class='warning'>La colonne '$column' n'existe pas. Ajout en cours...</p>";
             
-            foreach ($missing_columns as $column => $type) {
-                echo "<p>Ajout de la colonne '" . htmlspecialchars($column) . "'...</p>";
-                
-                if (strpos(DB_URL, 'pgsql') !== false) {
-                    // PostgreSQL
-                    switch ($column) {
-                        case 'id_utilisateur':
-                        case 'id_cours':
-                        case 'progression':
-                            $sql = "ALTER TABLE inscriptions ADD COLUMN " . $column . " INT NOT NULL DEFAULT 0";
-                            break;
-                        case 'date_inscription':
-                        case 'date_derniere_activite':
-                            $sql = "ALTER TABLE inscriptions ADD COLUMN " . $column . " TIMESTAMP DEFAULT CURRENT_TIMESTAMP";
-                            break;
-                        case 'statut':
-                            $sql = "ALTER TABLE inscriptions ADD COLUMN " . $column . " VARCHAR(50) DEFAULT 'actif'";
-                            break;
-                    }
-                } else {
-                    // MySQL
-                    switch ($column) {
-                        case 'id_utilisateur':
-                        case 'id_cours':
-                        case 'progression':
-                            $sql = "ALTER TABLE inscriptions ADD COLUMN " . $column . " INT NOT NULL DEFAULT 0";
-                            break;
-                        case 'date_inscription':
-                        case 'date_derniere_activite':
-                            $sql = "ALTER TABLE inscriptions ADD COLUMN " . $column . " TIMESTAMP DEFAULT CURRENT_TIMESTAMP";
-                            break;
-                        case 'statut':
-                            $sql = "ALTER TABLE inscriptions ADD COLUMN " . $column . " VARCHAR(50) DEFAULT 'actif'";
-                            break;
-                    }
-                }
-                
-                $pdo->exec($sql);
-                echo "<p class='success'>Colonne '" . htmlspecialchars($column) . "' ajoutée avec succès.</p>";
+            if (strpos(DB_URL, 'pgsql') !== false) {
+                $sql = "ALTER TABLE inscriptions ADD COLUMN $column $type";
+            } else {
+                $sql = "ALTER TABLE inscriptions ADD COLUMN $column $type";
             }
-        } else {
-            echo "<p class='success'>Toutes les colonnes requises existent dans la table 'inscriptions'.</p>";
+            
+            $pdo->exec($sql);
+            echo "<p class='success'>Colonne '$column' ajoutée avec succès</p>";
         }
     }
     
-    // 3. Afficher la structure actuelle de la table inscriptions
-    echo "<h2>3. Structure actuelle de la table inscriptions</h2>";
+    // 3. Vérifier les clés étrangères
+    echo "<h2>3. Vérification des clés étrangères</h2>";
+    
+    // Vérifier la clé étrangère vers utilisateurs
+    $sql = "
+        SELECT COUNT(*) 
+        FROM information_schema.key_column_usage 
+        WHERE table_name = 'inscriptions' 
+        AND column_name = 'id_utilisateur' 
+        AND referenced_table_name = 'utilisateurs'
+    ";
+    
+    if ($pdo->query($sql)->fetchColumn() === 0) {
+        echo "<p class='warning'>Clé étrangère vers utilisateurs manquante. Ajout en cours...</p>";
+        
+        if (strpos(DB_URL, 'pgsql') !== false) {
+            $sql = "ALTER TABLE inscriptions ADD CONSTRAINT fk_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id)";
+        } else {
+            $sql = "ALTER TABLE inscriptions ADD CONSTRAINT fk_utilisateur FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id)";
+        }
+        
+        $pdo->exec($sql);
+        echo "<p class='success'>Clé étrangère vers utilisateurs ajoutée avec succès</p>";
+    }
+    
+    // Vérifier la clé étrangère vers cours
+    $sql = "
+        SELECT COUNT(*) 
+        FROM information_schema.key_column_usage 
+        WHERE table_name = 'inscriptions' 
+        AND column_name = 'id_cours' 
+        AND referenced_table_name = 'cours'
+    ";
+    
+    if ($pdo->query($sql)->fetchColumn() === 0) {
+        echo "<p class='warning'>Clé étrangère vers cours manquante. Ajout en cours...</p>";
+        
+        if (strpos(DB_URL, 'pgsql') !== false) {
+            $sql = "ALTER TABLE inscriptions ADD CONSTRAINT fk_cours FOREIGN KEY (id_cours) REFERENCES cours(id)";
+        } else {
+            $sql = "ALTER TABLE inscriptions ADD CONSTRAINT fk_cours FOREIGN KEY (id_cours) REFERENCES cours(id)";
+        }
+        
+        $pdo->exec($sql);
+        echo "<p class='success'>Clé étrangère vers cours ajoutée avec succès</p>";
+    }
+    
+    // 4. Vérifier les données de test
+    echo "<h2>4. Vérification des données de test</h2>";
+    
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM inscriptions");
+    $stmt->execute();
+    $count = $stmt->fetchColumn();
+    
+    if ($count === 0) {
+        echo "<p class='warning'>Pas de données de test. Insertion en cours...</p>";
+        
+        // Insérer des données de test
+        $sql = "
+            INSERT INTO inscriptions (id_utilisateur, id_cours, progres, statut) VALUES
+            (1, 1, 50, 'en_cours'),
+            (2, 2, 80, 'complet'),
+            (3, 1, 30, 'en_cours')
+        ";
+        
+        $pdo->exec($sql);
+        echo "<p class='success'>Données de test insérées avec succès</p>";
+    } else {
+        echo "<p class='info'>$count enregistrements trouvés dans la table inscriptions</p>";
+    }
+    
+    // 5. Afficher la structure de la table
+    echo "<h2>5. Structure de la table inscriptions</h2>";
     
     if (strpos(DB_URL, 'pgsql') !== false) {
-        // PostgreSQL
         $sql = "
             SELECT column_name, data_type, character_maximum_length, column_default, is_nullable
             FROM information_schema.columns
@@ -267,11 +244,10 @@ try {
             ORDER BY ordinal_position
         ";
     } else {
-        // MySQL
         $sql = "
             SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, COLUMN_DEFAULT, IS_NULLABLE
             FROM INFORMATION_SCHEMA.COLUMNS
-            WHERE TABLE_SCHEMA = '" . DB_NAME . "' AND TABLE_NAME = 'inscriptions'
+            WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'inscriptions'
             ORDER BY ORDINAL_POSITION
         ";
     }
@@ -280,147 +256,44 @@ try {
     $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     echo "<table>";
-    echo "<tr><th>Colonne</th><th>Type</th><th>Longueur</th><th>Défaut</th><th>Nullable</th></tr>";
+    echo "<tr><th>Nom</th><th>Type</th><th>Longueur</th><th>Défaut</th><th>Nullable</th></tr>";
     
     foreach ($columns as $column) {
-        $columnName = $column['column_name'] ?? $column['COLUMN_NAME'];
-        $dataType = $column['data_type'] ?? $column['DATA_TYPE'];
-        $maxLength = $column['character_maximum_length'] ?? $column['CHARACTER_MAXIMUM_LENGTH'] ?? '';
-        $default = $column['column_default'] ?? $column['COLUMN_DEFAULT'] ?? '';
-        $nullable = $column['is_nullable'] ?? $column['IS_NULLABLE'];
-        
         echo "<tr>";
-        echo "<td>" . htmlspecialchars($columnName) . "</td>";
-        echo "<td>" . htmlspecialchars($dataType) . "</td>";
-        echo "<td>" . htmlspecialchars($maxLength) . "</td>";
-        echo "<td>" . htmlspecialchars($default) . "</td>";
-        echo "<td>" . htmlspecialchars($nullable) . "</td>";
+        echo "<td>" . htmlspecialchars($column['COLUMN_NAME']) . "</td>";
+        echo "<td>" . htmlspecialchars($column['DATA_TYPE']) . "</td>";
+        echo "<td>" . htmlspecialchars($column['CHARACTER_MAXIMUM_LENGTH'] ?? '') . "</td>";
+        echo "<td>" . htmlspecialchars($column['COLUMN_DEFAULT'] ?? '') . "</td>";
+        echo "<td>" . htmlspecialchars($column['IS_NULLABLE']) . "</td>";
         echo "</tr>";
     }
     
     echo "</table>";
     
-    // 4. Afficher les données de la table inscriptions
-    echo "<h2>4. Données de la table inscriptions</h2>";
+    // 6. Afficher les données de test
+    echo "<h2>6. Données de test</h2>";
     
-    $sql = "SELECT COUNT(*) FROM inscriptions";
-    $count = $pdo->query($sql)->fetchColumn();
+    $stmt = $pdo->query("SELECT * FROM inscriptions");
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    echo "<p>Nombre d'inscriptions: <strong>" . $count . "</strong></p>";
+    echo "<table>";
+    echo "<tr><th>ID</th><th>ID Utilisateur</th><th>ID Cours</th><th>Date</th><th>Progression</th><th>Statut</th></tr>";
     
-    if ($count > 0) {
-        $sql = "
-            SELECT 
-                i.id,
-                i.id_utilisateur,
-                i.id_cours,
-                i.date_inscription,
-                i.statut,
-                i.progression,
-                i.date_derniere_activite,
-                u.prenom AS prenom_utilisateur,
-                u.nom AS nom_utilisateur,
-                c.titre AS titre_cours
-            FROM inscriptions i
-            LEFT JOIN utilisateurs u ON i.id_utilisateur = u.id
-            LEFT JOIN cours c ON i.id_cours = c.id
-            ORDER BY i.date_inscription DESC
-            LIMIT 10
-        ";
-        
-        $stmt = $pdo->query($sql);
-        $inscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        echo "<table>";
+    foreach ($rows as $row) {
         echo "<tr>";
-        echo "<th>ID</th>";
-        echo "<th>Utilisateur</th>";
-        echo "<th>Cours</th>";
-        echo "<th>Date d'inscription</th>";
-        echo "<th>Statut</th>";
-        echo "<th>Progression</th>";
-        echo "<th>Dernière activité</th>";
+        echo "<td>" . htmlspecialchars($row['id']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['id_utilisateur']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['id_cours']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['date_inscription']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['progres']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['statut']) . "</td>";
         echo "</tr>";
-        
-        foreach ($inscriptions as $inscription) {
-            echo "<tr>";
-            echo "<td>" . htmlspecialchars($inscription['id']) . "</td>";
-            echo "<td>" . htmlspecialchars($inscription['prenom_utilisateur'] . ' ' . $inscription['nom_utilisateur']) . " (ID: " . htmlspecialchars($inscription['id_utilisateur']) . ")</td>";
-            echo "<td>" . htmlspecialchars($inscription['titre_cours']) . " (ID: " . htmlspecialchars($inscription['id_cours']) . ")</td>";
-            echo "<td>" . htmlspecialchars($inscription['date_inscription']) . "</td>";
-            echo "<td>" . htmlspecialchars($inscription['statut']) . "</td>";
-            echo "<td>" . htmlspecialchars($inscription['progression']) . "%</td>";
-            echo "<td>" . htmlspecialchars($inscription['date_derniere_activite']) . "</td>";
-            echo "</tr>";
-        }
-        
-        echo "</table>";
-    } else {
-        echo "<p class='warning'>Aucune inscription trouvée dans la base de données.</p>";
-        
-        // Proposer d'ajouter des données de test
-        if (tableExists($pdo, 'utilisateurs') && tableExists($pdo, 'cours')) {
-            echo "<form method='post'>";
-            echo "<input type='hidden' name='add_test_data' value='1'>";
-            echo "<button type='submit'>Ajouter des données de test</button>";
-            echo "</form>";
-            
-            if (isset($_POST['add_test_data'])) {
-                // Récupérer quelques utilisateurs
-                $stmt = $pdo->query("SELECT id FROM utilisateurs LIMIT 3");
-                $utilisateurs = $stmt->fetchAll(PDO::FETCH_COLUMN);
-                
-                // Récupérer quelques cours
-                $stmt = $pdo->query("SELECT id FROM cours LIMIT 3");
-                $cours = $stmt->fetchAll(PDO::FETCH_COLUMN);
-                
-                if (count($utilisateurs) > 0 && count($cours) > 0) {
-                    $inserted = 0;
-                    
-                    foreach ($utilisateurs as $id_utilisateur) {
-                        foreach ($cours as $id_cours) {
-                            try {
-                                $stmt = $pdo->prepare("
-                                    INSERT INTO inscriptions (id_utilisateur, id_cours, statut, progression)
-                                    VALUES (:id_utilisateur, :id_cours, :statut, :progression)
-                                ");
-                                
-                                $stmt->execute([
-                                    ':id_utilisateur' => $id_utilisateur,
-                                    ':id_cours' => $id_cours,
-                                    ':statut' => 'actif',
-                                    ':progression' => rand(0, 100)
-                                ]);
-                                
-                                $inserted++;
-                            } catch (PDOException $e) {
-                                // Ignorer les erreurs de duplication
-                                if (strpos($e->getMessage(), 'Duplicate entry') === false && 
-                                    strpos($e->getMessage(), 'duplicate key') === false) {
-                                    throw $e;
-                                }
-                            }
-                        }
-                    }
-                    
-                    echo "<p class='success'>" . $inserted . " inscriptions de test insérées. <a href=''>Rafraîchir</a></p>";
-                } else {
-                    echo "<p class='warning'>Impossible d'insérer des données de test: pas assez d'utilisateurs ou de cours.</p>";
-                }
-            }
-        } else {
-            echo "<p class='warning'>Impossible d'ajouter des données de test: les tables 'utilisateurs' ou 'cours' n'existent pas.</p>";
-        }
     }
     
-    echo "<h2>Conclusion</h2>";
-    echo "<p class='success'>La vérification et la correction de la table 'inscriptions' ont été effectuées avec succès.</p>";
-    echo "<p><a href='../index.php'>Retour à l'accueil</a> | <a href='test_db_connection.php'>Tester la connexion à la base de données</a> | <a href='check_and_fix_database.php'>Vérifier et corriger la base de données</a></p>";
-
-} catch (PDOException $e) {
-    echo "<div class='error'>ERREUR : " . $e->getMessage() . "</div>";
+    echo "</table>";
+    
+} catch (Exception $e) {
+    echo "<p class='error'>Erreur critique: " . $e->getMessage() . "</p>";
 }
 
-echo '</body>
-</html>';
-?>
+echo "</body></html>";
