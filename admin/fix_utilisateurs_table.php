@@ -41,7 +41,8 @@ function tableExists(PDO $pdo, string $table) {
             $parsed_url = parse_url(DATABASE_URL);
             $db_name = ltrim($parsed_url['path'], '/');
         } else {
-            $db_name = $pdo->query('SELECT DATABASE()')->fetchColumn();
+            // PostgreSQL ne supporte pas SELECT DATABASE()
+            $db_name = 'lawapp';
         }
         
         if (empty($db_name)) {
@@ -111,25 +112,10 @@ try {
         // Créer la table utilisateurs
         if (strpos(DB_URL, 'pgsql') !== false) {
             // PostgreSQL
-            $sql = "
+            $createTableQuery = "
                 CREATE TABLE utilisateurs (
                     id SERIAL PRIMARY KEY,
-                    email VARCHAR(255) NOT NULL UNIQUE,
-                    mot_de_passe VARCHAR(255) NOT NULL,
-                    prenom VARCHAR(100) NOT NULL,
                     nom VARCHAR(100) NOT NULL,
-                    date_naissance DATE,
-                    adresse TEXT,
-                    telephone VARCHAR(20),
-                    role VARCHAR(20) DEFAULT 'utilisateur',
-                    statut VARCHAR(20) DEFAULT 'actif',
-                    date_inscription TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    derniere_connexion TIMESTAMP
-                )
-            ";
-        } else {
-            // MySQL
-            $sql = "
                 CREATE TABLE utilisateurs (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     email VARCHAR(255) NOT NULL UNIQUE,
