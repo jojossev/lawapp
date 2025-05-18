@@ -12,6 +12,16 @@ echo "<!DOCTYPE html>
 <html>
 <head>
 <title>Correction de la table cours</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h2 { color: #333; }
+    .success { color: green; }
+    .warning { color: orange; }
+    .error { color: red; }
+    table { border-collapse: collapse; width: 100%; }
+    table, th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background-color: #f2f2f2; }
+</style>
 </head>
 <body>";
 
@@ -352,14 +362,12 @@ try {
     echo "<ul>";
     echo "<li>Vérification de l'existence de la table 'cours'</li>";
     echo "<li>Ajout des colonnes manquantes</li>";
-    echo "<li>Création de l'index sur 'categorie_id'</li>";
-    echo "<li>Affichage de la structure de la table</li>";
-    echo "</ul>";
-    echo "<p class='warning'>Note : Assurez-vous de vérifier manuellement la base de données pour confirmer les modifications.</p>";
-} catch (PDOException $e) {
-    echo "<p class='error'>Erreur globale : " . $e->getMessage() . "</p>";
 }
 
+// Exécution de la correction
+runCoursTableFix($pdo);
+
+// Fermeture de la page HTML
 echo "</body>
 </html>";
 
