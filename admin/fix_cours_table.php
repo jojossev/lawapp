@@ -232,6 +232,11 @@ try {
 } catch (PDOException $e) {
     echo "<p class='error'>Erreur : " . $e->getMessage() . "</p>";
 }
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once __DIR__ . '/../includes/config.php';
 
 // Ajout de style CSS
 echo "<style>
@@ -244,6 +249,130 @@ echo "<style>
     th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
 </style>";
 
+// Fonctions de vérification de table et colonne
+if (!function_exists('tableExists')) {
+    function tableExists(PDO $pdo, string $table) {
+        try {
+            $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+            
+            if ($driver_name === 'pgsql') {
+                $stmt = $pdo->prepare("
+                    SELECT EXISTS (
+                        SELECT 1 FROM information_schema.tables 
+                        WHERE table_schema = 'public' AND table_name = :table
+                    )
+                ");
+                $stmt->execute([':table' => $table]);
+            } else {
+                $stmt = $pdo->prepare("
+                    SELECT COUNT(*) 
+                    FROM information_schema.tables 
+                    WHERE table_schema = DATABASE() AND table_name = :table
+                ");
+                $stmt->execute([':table' => $table]);
+            }
+            
+            return (bool)$stmt->fetchColumn();
+        } catch (PDOException $e) {
+            echo "Erreur lors de la vérification de la table: " . $e->getMessage();
+            return false;
+        }
+    }
+}
+
+if (!function_exists('columnExists')) {
+    function columnExists(PDO $pdo, string $table, string $column) {
+        try {
+            $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+            
+            if ($driver_name === 'pgsql') {
+                $stmt = $pdo->prepare("
+                    SELECT EXISTS (
+                        SELECT 1 FROM information_schema.columns 
+                        WHERE table_schema = 'public' 
+                        AND table_name = :table 
+                        AND column_name = :column
+                    )
+                ");
+                $stmt->execute([
+                    ':table' => $table,
+                    ':column' => $column
+                ]);
+            } else {
+                $stmt = $pdo->prepare("
+                    SELECT COUNT(*) 
+                    FROM information_schema.columns 
+                    WHERE table_schema = DATABASE() 
+                    AND table_name = :table 
+                    AND column_name = :column
+                ");
+                $stmt->execute([
+                    ':table' => $table,
+                    ':column' => $column
+                ]);
+            }
+            
+            return (bool)$stmt->fetchColumn();
+        } catch (PDOException $e) {
+            echo "<p class='error'>Erreur lors de la vérification de la colonne: " . $e->getMessage() . "</p>";
+            return false;
+        }
+    }
+}
+
+try {
+    // Récupération dynamique du nom de base de données
+    $database_name = null;
+    if (defined('DATABASE_URL')) {
+        $parsed_url = parse_url(DATABASE_URL);
+        $database_name = ltrim($parsed_url['path'], '/');
+    } elseif (getenv('DATABASE_URL')) {
+        $parsed_url = parse_url(getenv('DATABASE_URL'));
+        $database_name = ltrim($parsed_url['path'], '/');
+    }
+    $database_name = $database_name ?? 'lawapp';
+
+    // Déterminer le driver de base de données
+    $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+
+    // 1. Vérifier si la table cours existe
+    echo "<h2>1. Vérification de la table cours</h2>";
+    
+    if (!tableExists($pdo, 'cours')) {
+        echo "<p class='warning'>La table 'cours' n'existe pas. Création en cours...</p>";
+        
+        // Création de la table cours
+        $createTableQuery = $driver_name === 'pgsql' ? "
+            CREATE TABLE cours (
+                id SERIAL PRIMARY KEY,
+                titre VARCHAR(255) NOT NULL,
+                description TEXT,
+                categorie_id INT,
+                duree INT,
+                niveau VARCHAR(50),
+                prix DECIMAL(10, 2),
+                date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        " : "
+            CREATE TABLE cours (
+                id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                titre VARCHAR(255) NOT NULL,
+                description TEXT,
+                categorie_id INT,
+                duree INT,
+                niveau VARCHAR(50),
+                prix DECIMAL(10, 2),
+                date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB;
+        ";
+        
+        $pdo->exec($createTableQuery);
+        echo "<p class='success'>Table 'cours' créée avec succès.</p>";
+    }
+
+    // 2. Vérifier et ajouter les colonnes manquantes
     echo "<h2>2. Vérification des colonnes de la table cours</h2>";
     
     $colonnes = [
@@ -337,18 +466,96 @@ echo "<style>
     echo "<p class='error'>Erreur : " . $e->getMessage() . "</p>";
 }
 
-// Style CSS pour une meilleure présentation
-echo '<!DOCTYPE html>
-<html lang="fr">
-<head>
-{{ ... }}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Correction de la table cours</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        h1, h2, h3 { color: #333; }
-        .success { color: green; }
+// Ajout de style CSS
+echo "<style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    h2 { color: #333; }
+    .success { color: green; }
+    .warning { color: orange; }
+    .error { color: red; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+</style>";
+    foreach ($colonnes as $colonne => $definition) {
+        if (!columnExists($pdo, 'cours', $colonne)) {
+            $query = "ALTER TABLE cours ADD COLUMN $colonne $definition";
+            $pdo->exec($query);
+            echo "<p class='success'>Colonne '$colonne' ajoutée.</p>";
+        }
+    }
+
+    // 3. Vérifier les index
+    echo "<h2>3. Vérification des index</h2>";
+    
+    // Index sur categorie_id
+    $categorie_index_exists = false;
+    
+    if ($driver_name === 'pgsql') {
+        // PostgreSQL
+        $sql = "
+            SELECT COUNT(*) 
+            FROM pg_indexes 
+            WHERE tablename = 'cours' 
+            AND indexdef LIKE '%categorie_id%'
+        ";
+        $categorie_index_exists = (bool)$pdo->query($sql)->fetchColumn();
+    } else {
+        // MySQL
+        $sql = "
+            SELECT COUNT(*) 
+            FROM information_schema.table_constraints
+            WHERE table_schema = '" . $database_name . "' 
+            AND table_name = 'cours' 
+            AND constraint_type = 'INDEX'
+            AND constraint_name LIKE '%categorie_id%'
+        ";
+        $categorie_index_exists = (bool)$pdo->query($sql)->fetchColumn();
+    }
+    
+    if (!$categorie_index_exists) {
+        echo "<p class='warning'>L'index sur la colonne 'categorie_id' n'existe pas. Création en cours...</p>";
+        
+        try {
+            if ($driver_name === 'pgsql') {
+                // PostgreSQL
+                $sql = "CREATE INDEX cours_categorie_idx ON cours (categorie_id)";
+            } else {
+                // MySQL
+                $sql = "CREATE INDEX cours_categorie_idx ON cours (categorie_id)";
+            }
+            
+            $pdo->exec($sql);
+            echo "<p class='success'>Index sur la colonne 'categorie_id' créé avec succès.</p>";
+        } catch (PDOException $e) {
+            echo "<p class='error'>Erreur lors de la création de l'index : " . $e->getMessage() . "</p>";
+        }
+    }
+
+    // 4. Afficher la structure de la table
+    echo "<h2>4. Structure de la table cours</h2>";
+    
+    $query = $driver_name === 'pgsql' 
+        ? "SELECT column_name, data_type FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'cours' ORDER BY ordinal_position"
+        : "DESCRIBE cours";
+    
+    $stmt = $pdo->query($query);
+    $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    echo "<table border='1'>";
+    echo "<tr><th>Colonne</th><th>Type</th></tr>";
+    foreach ($columns as $column) {
+        echo "<tr>";
+        echo "<td>" . ($column['column_name'] ?? $column['Field']) . "</td>";
+        echo "<td>" . ($column['data_type'] ?? $column['Type']) . "</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+
+} catch (PDOException $e) {
+    echo "<p class='error'>Erreur : " . $e->getMessage() . "</p>";
+}
+
+
         .error { color: red; }
         .warning { color: orange; }
         .info { color: blue; }
