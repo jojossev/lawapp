@@ -1,21 +1,19 @@
 <?php
 // Configuration des rapports d'erreurs
 ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Inclusion de la configuration
 require_once __DIR__ . '/../includes/config.php';
 
-// Fonction de correction de la table cours
-function fixCoursTable(PDO $pdo): array {
-    $messages = [];
-    $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+// Correction de la table cours
+$messages = [];
+$driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
 
-    // Vérification de l'existence de la table
-    $table_check_query = $driver_name === 'pgsql' 
-        ? "SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'cours')" 
-        : "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'cours'";
+// Vérification de l'existence de la table
+$table_check_query = $driver_name === 'pgsql' 
+    ? "SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'cours')" 
+    : "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'cours'";
 
     $table_exists = $pdo->query($table_check_query)->fetchColumn();
 
