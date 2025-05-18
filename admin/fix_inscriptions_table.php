@@ -247,7 +247,7 @@ try {
         $sql = "
             SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, COLUMN_DEFAULT, IS_NULLABLE
             FROM INFORMATION_SCHEMA.COLUMNS
-            WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'inscriptions'
+            WHERE TABLE_SCHEMA = current_database() AND TABLE_NAME = 'inscriptions'
             ORDER BY ORDINAL_POSITION
         ";
     }
