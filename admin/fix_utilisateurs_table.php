@@ -414,6 +414,9 @@ try {
     }
     $database_name = $database_name ?? 'lawapp';
 
+    // Déterminer le driver si non défini
+    $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+
     if ($driver_name === 'pgsql') {
         // PostgreSQL
         $sql = "
@@ -427,10 +430,11 @@ try {
         // MySQL
         $sql = "
             SELECT COUNT(*) 
-            FROM information_schema.statistics 
+            FROM information_schema.table_constraints
             WHERE table_schema = '" . $database_name . "' 
             AND table_name = 'utilisateurs' 
-            AND column_name = 'email'
+            AND constraint_type = 'UNIQUE'
+            AND constraint_name LIKE '%email%'
         ";
         $email_index_exists = (bool)$pdo->query($sql)->fetchColumn();
     }
