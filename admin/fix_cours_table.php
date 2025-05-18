@@ -6,15 +6,24 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../includes/config.php';
 
 // Ajout de style CSS
-echo "<style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-    h2 { color: #333; }
-    .success { color: green; }
-    .warning { color: orange; }
-    .error { color: red; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-</style>";
+echo "<!DOCTYPE html>
+<html lang='fr'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Correction de la table cours</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h2 { color: #333; }
+        .success { color: green; }
+        .warning { color: orange; }
+        .error { color: red; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+    <h1>Correction de la table cours</h1>";
 
 // Fonctions de vérification de table et colonne
 if (!function_exists('tableExists')) {
@@ -232,9 +241,9 @@ try {
 } catch (PDOException $e) {
     echo "<p class='error'>Erreur : " . $e->getMessage() . "</p>";
 }
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
+echo "</body>
+</html>";
 
 require_once __DIR__ . '/../includes/config.php';
 
@@ -248,17 +257,6 @@ echo "<style>
     table { width: 100%; border-collapse: collapse; }
     th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
 </style>";
-
-// Fonctions de vérification de table et colonne
-if (!function_exists('tableExists')) {
-    function tableExists(PDO $pdo, string $table) {
-        try {
-            $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-            
-            if ($driver_name === 'pgsql') {
-                $stmt = $pdo->prepare("
-                    SELECT EXISTS (
-                        SELECT 1 FROM information_schema.tables 
                         WHERE table_schema = 'public' AND table_name = :table
                     )
                 ");
