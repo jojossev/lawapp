@@ -51,7 +51,17 @@ function tableExists($pdo, $table) {
                 FROM information_schema.tables 
                 WHERE table_schema = :dbname AND table_name = :table
             ");
-            $stmt->execute([':dbname' => DB_NAME, ':table' => $table]);
+            // Extraire dynamiquement le nom de la base de données
+            $database_url = defined('DATABASE_URL') ? DATABASE_URL : getenv('DATABASE_URL');
+            if (empty($database_url)) {
+                // Fallback si aucune URL n'est définie
+                $db_name = 'lawapp_';
+            } else {
+                $db_name = parse_url($database_url, PHP_URL_PATH);
+                $db_name = ltrim($db_name, '/');
+            }
+            
+            $stmt->execute([':dbname' => $db_name, ':table' => $table]);
         }
         return (bool)$stmt->fetchColumn();
     } catch (PDOException $e) {
