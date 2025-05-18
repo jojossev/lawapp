@@ -124,28 +124,47 @@ try {
     }
     echo "</table>";
     
-    // Vérifier les permissions
-    echo "<h2>4. Permissions de l'utilisateur</h2>";
-    try {
-        if (strpos(DB_URL, 'pgsql') !== false) {
-            // PostgreSQL
+    // Vérification des permissions
+    $permissions = [];
+    
+    if (strpos($pdo->getAttribute(PDO::ATTR_DRIVER_NAME), 'pgsql') !== false) {
+        // PostgreSQL : utiliser une requête pour obtenir les privilèges
+        try {
             $stmt = $pdo->query("
                 SELECT grantee, privilege_type 
                 FROM information_schema.role_table_grants 
                 WHERE grantee = CURRENT_USER 
+                LIMIT 1
+            ");
+            $permissions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            if (empty($permissions)) {
+                echo "4. Test des permissions : Aucune permission trouvée pour l'utilisateur actuel.\n";
+            } else {
+                echo "4. Test des permissions : Permissions trouvées pour l'utilisateur actuel.\n";
+                echo "<pre>";
+                print_r($permissions);
+                echo "</pre>";
             }
-        } else {
-            // MySQL
+        } catch (PDOException $inner_e) {
+            echo "4. Erreur lors de la vérification des permissions PostgreSQL : " . $inner_e->getMessage() . "\n";
+        }
+    } else {
+        // MySQL
+        try {
             $stmt = $pdo->query("SHOW GRANTS FOR CURRENT_USER()");
             $permissions = $stmt->fetchAll(PDO::FETCH_COLUMN);
             
+            echo "4. Test des permissions MySQL :\n";
             echo "<pre>";
             foreach ($permissions as $permission) {
                 echo htmlspecialchars($permission) . "\n";
             }
             echo "</pre>";
+        } catch (PDOException $mysql_e) {
+            echo "4. Erreur lors de la vérification des permissions MySQL : " . $mysql_e->getMessage() . "\n";
         }
-    } catch (PDOException $e) {}
+    }
     
     // Tester les tables spécifiques si elles existent
     echo "<h2>5. Tests des tables spécifiques</h2>";
