@@ -72,7 +72,8 @@ foreach ($columns as $column => $type) {
 
 // Affichage des résultats
 header('Content-Type: text/html; charset=utf-8');
-echo "<!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html>
 <head>
 <title>Correction de la table cours</title>
@@ -81,19 +82,19 @@ echo "<!DOCTYPE html>
     .success { color: green; }
 </style>
 </head>
-<body>";
-
-echo "<h2>Résultat de la correction</h2>";
+<body>
+<h2>Résultat de la correction</h2>
+<?php
 if (count($messages) === 0) {
     echo "<p class='success'>Aucune modification nécessaire pour la table 'cours'.</p>";
 } else {
     foreach ($messages as $message) {
-        echo "<p class='success">$message</p>";
+        echo "<p class='success'>$message</p>";
     }
 }
-
-echo "</body>
-</html>";
+?>
+</body>
+</html>
         $this->pdo = $pdo;
         $this->driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
         $this->database_name = $this->getDatabaseName();
