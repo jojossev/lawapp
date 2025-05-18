@@ -158,9 +158,9 @@ if (!tableExists($pdo, 'videos')) {
             url VARCHAR(255) NOT NULL,
             duree VARCHAR(10),
             id_categorie INT,
-            vues INT DEFAULT 0,
             date_publication TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            statut VARCHAR(20) DEFAULT 'actif'
+            id_categorie INT,
+            FOREIGN KEY (id_categorie) REFERENCES categories_videos(id)
         )";
     } else {
         // MySQL
@@ -169,12 +169,11 @@ if (!tableExists($pdo, 'videos')) {
             id INT AUTO_INCREMENT PRIMARY KEY,
             titre VARCHAR(255) NOT NULL,
             description TEXT,
-            url VARCHAR(255) NOT NULL,
-            duree VARCHAR(10),
-            id_categorie INT,
-            vues INT DEFAULT 0,
+            url_video VARCHAR(255) NOT NULL,
+            duree INT,
             date_publication TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            statut VARCHAR(20) DEFAULT 'actif'
+            id_categorie INT,
+            FOREIGN KEY (id_categorie) REFERENCES categories_videos(id)
         )";
     }
     
@@ -182,10 +181,10 @@ if (!tableExists($pdo, 'videos')) {
     
     // Insérer des vidéos de test
     $sql_insert_videos = "
-    INSERT INTO videos (titre, description, url, duree, id_categorie) VALUES 
-        ('Introduction au droit civil', 'Une introduction complète au droit civil', 'https://www.youtube.com/watch?v=example1', '10:30', 1),
-        ('Conférence sur le droit pénal', 'Enregistrement d''une conférence sur le droit pénal', 'https://www.youtube.com/watch?v=example2', '45:20', 2),
-        ('Comment rédiger un contrat', 'Tutoriel sur la rédaction de contrats', 'https://www.youtube.com/watch?v=example3', '15:45', 1)";
+    INSERT INTO videos (titre, description, url_video, duree, id_categorie) VALUES 
+        ('Introduction au droit civil', 'Une introduction complète au droit civil', 'https://www.youtube.com/watch?v=example1', 10, 1),
+        ('Conférence sur le droit pénal', 'Enregistrement d''une conférence sur le droit pénal', 'https://www.youtube.com/watch?v=example2', 45, 2),
+        ('Comment rédiger un contrat', 'Tutoriel sur la rédaction de contrats', 'https://www.youtube.com/watch?v=example3', 15, 1)";
     
     executeQuery($pdo, $sql_insert_videos, "Insertion des vidéos de test");
 } else {
