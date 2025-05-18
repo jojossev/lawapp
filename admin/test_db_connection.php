@@ -62,14 +62,31 @@ try {
     echo "<p><strong>Type de base de données:</strong> " . (strpos(DB_URL, 'pgsql') !== false ? 'PostgreSQL' : 'MySQL') . "</p>";
     echo "<p><strong>État de la connexion:</strong> <span class='success'>Connecté</span></p>";
     echo "<p><strong>Version du serveur:</strong> " . $pdo->getAttribute(PDO::ATTR_SERVER_VERSION) . "</p>";
-    echo "<p><strong>Nom de la base de données:</strong> " . DB_NAME . "</p>";
-    echo "<p><strong>Hôte:</strong> " . DB_HOST . "</p>";
+    // Extraire dynamiquement le nom de la base de données et l'hôte
+    $database_url = defined('DATABASE_URL') ? DATABASE_URL : getenv('DATABASE_URL');
+    
+    if (empty($database_url)) {
+        echo "<p><strong>Nom de la base de données:</strong> Inconnu</p>";
+        echo "<p><strong>Hôte:</strong> Inconnu</p>";
+    } else {
+        // Analyser l'URL de la base de données
+        $parsed_url = parse_url($database_url);
+        
+        // Extraire le nom de la base de données
+        $db_name = ltrim($parsed_url['path'], '/');
+        echo "<p><strong>Nom de la base de données:</strong> " . htmlspecialchars($db_name) . "</p>";
+        
+        // Extraire l'hôte
+        $db_host = $parsed_url['host'] ?? 'localhost';
+        echo "<p><strong>Hôte:</strong> " . htmlspecialchars($db_host) . "</p>";
+    }
     
     // Vérifier les tables existantes
     echo "<h2>2. Tables existantes dans la base de données</h2>";
     
     // Adapter la requête en fonction du type de base de données
-    if (strpos(DB_URL, 'pgsql') !== false) {
+    $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+    if ($driver_name === 'pgsql') {
         // PostgreSQL
         $stmt = $pdo->query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'");
     } else {
