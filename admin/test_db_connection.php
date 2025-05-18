@@ -30,14 +30,27 @@ echo '<!DOCTYPE html>
 require_once __DIR__ . '/../includes/config.php';
 
 // Fonction pour vérifier si une table existe
-function tableExists($pdo, $table) {
+function tableExists(PDO $pdo, string $table) {
     try {
-        // PostgreSQL
-        if (strpos(DB_URL, 'pgsql') !== false) {
+        $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+        
+        // Extraire dynamiquement le nom de la base de données
+        $database_url = defined('DATABASE_URL') ? DATABASE_URL : getenv('DATABASE_URL');
+        
+        if (empty($database_url)) {
+            // Fallback si aucune URL n'est définie
+            $db_name = 'lawapp_';
+        } else {
+            $parsed_url = parse_url($database_url);
+            $db_name = ltrim($parsed_url['path'], '/');
+        }
+        
+        if ($driver_name === 'pgsql') {
+            // PostgreSQL
             $stmt = $pdo->prepare("
                 SELECT EXISTS (
-                    SELECT FROM information_schema.tables 
-                    WHERE table_name = :table
+                    SELECT 1 FROM information_schema.tables 
+                    WHERE table_schema = 'public' AND table_name = :table
                 )
             ");
             $stmt->execute([':table' => $table]);
@@ -48,7 +61,7 @@ function tableExists($pdo, $table) {
                 FROM information_schema.tables 
                 WHERE table_schema = :dbname AND table_name = :table
             ");
-            $stmt->execute([':dbname' => DB_NAME, ':table' => $table]);
+            $stmt->execute([':dbname' => $db_name, ':table' => $table]);
         }
         return (bool)$stmt->fetchColumn();
     } catch (PDOException $e) {
