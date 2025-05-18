@@ -8,11 +8,11 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../includes/config.php';
 
 // Fonction de correction de la table cours
-function fixCoursTable(PDO $pdo) {
-    $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+function fixCoursTable(PDO $pdo): array {
     $messages = [];
+    $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
 
-    // Création de la table si elle n'existe pas
+    // Requête de vérification de l'existence de la table
     $table_check_query = $driver_name === 'pgsql' 
         ? "SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'cours')" 
         : "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'cours'";
