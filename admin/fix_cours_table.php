@@ -6,6 +6,9 @@ error_reporting(E_ALL);
 // Inclusion de la configuration
 require_once __DIR__ . '/../includes/config.php';
 
+// Désactiver la mise en mémoire tampon de sortie
+ob_end_clean();
+
 // Initialisation des variables
 $messages = array();
 $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
@@ -70,7 +73,12 @@ foreach ($columns as $column => $type) {
     }
 }
 
-// Affichage des résultats
+// Nettoyer tous les buffers de sortie avant d'envoyer les en-têtes
+while (ob_get_level()) {
+    ob_end_clean();
+}
+
+// Envoyer les en-têtes
 header('Content-Type: text/html; charset=utf-8');
 ?>
 <!DOCTYPE html>
@@ -89,7 +97,7 @@ if (count($messages) === 0) {
     echo "<p class='success'>Aucune modification nécessaire pour la table 'cours'.</p>";
 } else {
     foreach ($messages as $message) {
-        echo "<p class='success'>$message</p>";
+        echo "<p class='success'>".htmlspecialchars($message)."</p>";
     }
 }
 ?>
