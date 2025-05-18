@@ -42,12 +42,13 @@ function tableExists($pdo, $table) {
             $stmt->execute([':table' => $table]);
         } else {
             // MySQL
-            $stmt = $pdo->prepare("
+            $sql = "
                 SELECT COUNT(*) 
                 FROM information_schema.tables 
-                WHERE table_schema = :dbname AND table_name = :table
-            ");
-            $stmt->execute([':dbname' => DB_NAME, ':table' => $table]);
+                WHERE table_schema = current_database() AND table_name = :table
+            ";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([':table' => $table]);
         }
         return (bool)$stmt->fetchColumn();
     } catch (PDOException $e) {
