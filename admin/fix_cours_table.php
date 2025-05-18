@@ -8,7 +8,8 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../includes/config.php';
 
 // Démarrage de la sortie HTML
-echo "<!DOCTYPE html>
+function displayHeader() {
+    echo "<!DOCTYPE html>
 <html>
 <head>
 <title>Correction de la table cours</title>
@@ -24,6 +25,7 @@ echo "<!DOCTYPE html>
 </style>
 </head>
 <body>";
+}
 
 // Fonctions utilitaires pour la gestion de la base de données
 class DatabaseHelper {
@@ -359,21 +361,10 @@ try {
     echo "<h2>Résumé de la correction</h2>";
     echo "<p class='success'>La table 'cours' a été vérifiée et corrigée avec succès.</p>";
     echo "<p>Les étapes suivantes ont été effectuées :</p>";
-    echo "<ul>";
-    echo "<li>Vérification de l'existence de la table 'cours'</li>";
-    echo "<li>Ajout des colonnes manquantes</li>";
 }
 
 // Exécution de la correction
-runCoursTableFix($pdo);
-
-// Fermeture de la page HTML
-echo "</body>
-</html>";
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+runCoursTableCorrection($pdo);
 
 require_once __DIR__ . '/../includes/config.php';
 $database_name = null;
