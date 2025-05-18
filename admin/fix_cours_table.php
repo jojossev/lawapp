@@ -6,11 +6,11 @@ error_reporting(E_ALL);
 // Inclusion de la configuration
 require_once __DIR__ . '/../includes/config.php';
 
-// Correction de la table cours
+// Initialisation des variables
 $messages = [];
 $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
 
-// Vérification de l'existence de la table
+// Requête de vérification de l'existence de la table
 $table_check_query = $driver_name === 'pgsql' 
     ? "SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'cours')" 
     : "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'cours'";
@@ -49,13 +49,14 @@ if (!$table_exists) {
     $messages[] = "Table 'cours' créée avec succès.";
 }
 
-// Ajout des colonnes manquantes
+// Liste des colonnes à vérifier et ajouter
 $columns = [
     'categorie_id' => 'INT',
     'niveau' => 'VARCHAR(50)',
     'prix' => 'DECIMAL(10, 2)'
 ];
 
+// Ajout des colonnes manquantes
 foreach ($columns as $column => $type) {
     $column_check_query = $driver_name === 'pgsql' 
         ? "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'cours' AND column_name = '$column')" 
@@ -70,6 +71,7 @@ foreach ($columns as $column => $type) {
 }
 
 // Affichage des résultats
+header('Content-Type: text/html; charset=utf-8');
 echo "<!DOCTYPE html>
 <html>
 <head>
