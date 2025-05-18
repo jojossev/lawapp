@@ -169,9 +169,9 @@ try {
     $sql = "
         SELECT COUNT(*) 
         FROM information_schema.key_column_usage 
-        WHERE table_name = 'inscriptions' 
-        AND column_name = 'id_utilisateur' 
-        AND referenced_table_name = 'utilisateurs'
+        WHERE TABLE_NAME = 'inscriptions' 
+        AND COLUMN_NAME = 'id_utilisateur' 
+        AND REFERENCED_TABLE_NAME = 'utilisateurs'
     ";
     
     if ($pdo->query($sql)->fetchColumn() === 0) {
@@ -191,9 +191,9 @@ try {
     $sql = "
         SELECT COUNT(*) 
         FROM information_schema.key_column_usage 
-        WHERE table_name = 'inscriptions' 
-        AND column_name = 'id_cours' 
-        AND referenced_table_name = 'cours'
+        WHERE TABLE_NAME = 'inscriptions' 
+        AND COLUMN_NAME = 'id_cours' 
+        AND REFERENCED_TABLE_NAME = 'cours'
     ";
     
     if ($pdo->query($sql)->fetchColumn() === 0) {
