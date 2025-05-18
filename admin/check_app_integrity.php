@@ -84,9 +84,18 @@ try {
         
         // Afficher les informations de connexion
         echo "<p>Type de base de données: <strong>" . (strpos(DB_URL, 'pgsql') !== false ? 'PostgreSQL' : 'MySQL') . "</strong></p>";
-        // Extraire le nom de la base de données de l'URL
-        $db_name = parse_url(DATABASE_URL, PHP_URL_PATH);
-        $db_name = ltrim($db_name, '/');
+        // Vérifier l'existence de DATABASE_URL
+        $database_url = defined('DATABASE_URL') ? DATABASE_URL : getenv('DATABASE_URL');
+        
+        if (empty($database_url)) {
+            echo "<p class='error'>✗ Variable DATABASE_URL non définie.</p>";
+            $db_name = 'Inconnu';
+        } else {
+            // Extraire le nom de la base de données de l'URL
+            $db_name = parse_url($database_url, PHP_URL_PATH);
+            $db_name = ltrim($db_name, '/');
+        }
+        
         echo "<p>Nom de la base de données: <strong>" . htmlspecialchars($db_name) . "</strong></p>";
         
         // Vérifier la version de la base de données
