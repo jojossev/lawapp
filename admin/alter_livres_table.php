@@ -18,6 +18,39 @@ function addColumnSafely($pdo, $table, $column, $type) {
         
         // Si la colonne n'existe pas, l'ajouter
         if ($checkQuery->rowCount() == 0) {
+            try {
+                // Déterminer le type de base de données
+                $isPostgreSQL = strpos(DATABASE_URL, 'pgsql') !== false;
+                
+                // Requête pour ajouter la colonne
+                if ($isPostgreSQL) {
+                    // PostgreSQL
+                    $alterQuery = "
+                        DO $$
+                        BEGIN
+                            IF NOT EXISTS (
+                                SELECT column_name 
+                                FROM information_schema.columns 
+                                WHERE table_name = '$table' AND column_name = '$column'
+                            ) THEN
+                                ALTER TABLE $table ADD COLUMN $column $type;
+                            END IF;
+                        END $$;
+                    ";
+                } else {
+                    // MySQL
+                    $alterQuery = "ALTER TABLE $table ADD COLUMN IF NOT EXISTS $column $type";
+                }
+                
+                // Exécuter la requête d'ajout de colonne
+                $pdo->exec($alterQuery);
+                echo "Colonne $column ajoutée à la table $table.\n";
+                
+                // Mettre à jour les enregistrements existants
+                $updateQuery = "
+                    UPDATE $table 
+                    SET $column = COALESCE($column, 'default_book_image.jpg')
+                    WHERE $column IS NULL
             $alterQuery = "ALTER TABLE $table ADD COLUMN $column $type";
             
             // Gestion des différences entre PostgreSQL et MySQL
