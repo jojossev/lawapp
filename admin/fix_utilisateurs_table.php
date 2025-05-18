@@ -77,24 +77,47 @@ function tableExists(PDO $pdo, string $table) {
 // Fonction pour vérifier si une colonne existe dans une table
 function columnExists(PDO $pdo, string $table, string $column) {
     try {
-        // PostgreSQL
-        if (strpos(DB_URL, 'pgsql') !== false) {
+        $driver_name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+        
+        if ($driver_name === 'pgsql') {
             $stmt = $pdo->prepare("
                 SELECT EXISTS (
-                    SELECT FROM information_schema.columns 
-                    WHERE table_name = :table AND column_name = :column
+                    SELECT 1 FROM information_schema.columns 
+                    WHERE table_schema = 'public' 
+                    AND table_name = :table 
+                    AND column_name = :column
                 )
             ");
-            $stmt->execute([':table' => $table, ':column' => $column]);
+            $stmt->execute([
+                ':table' => $table,
+                ':column' => $column
+            ]);
         } else {
-            // MySQL
+            // Récupérer dynamiquement le nom de la base de données
+            $database_name = null;
+            
+            // Essayer de récupérer le nom de la base de données
+            if (defined('DATABASE_URL')) {
+                $parsed_url = parse_url(DATABASE_URL);
+                $database_name = ltrim($parsed_url['path'], '/');
+            } elseif (getenv('DATABASE_URL')) {
+                $parsed_url = parse_url(getenv('DATABASE_URL'));
+                $database_name = ltrim($parsed_url['path'], '/');
+            }
+            
+            // Requête générique pour vérifier l'existence de la colonne
             $stmt = $pdo->prepare("
                 SELECT COUNT(*) 
                 FROM information_schema.columns 
-                WHERE table_schema = :dbname AND table_name = :table AND column_name = :column
+                WHERE table_schema = DATABASE() AND table_name = :table AND column_name = :column
             ");
-            $stmt->execute([':dbname' => DB_NAME, ':table' => $table, ':column' => $column]);
+            
+            $stmt->execute([
+                ':table' => $table, 
+                ':column' => $column
+            ]);
         }
+        
         return (bool)$stmt->fetchColumn();
     } catch (PDOException $e) {
         echo "<p class='error'>Erreur lors de la vérification de la colonne: " . $e->getMessage() . "</p>";
