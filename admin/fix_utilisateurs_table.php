@@ -403,7 +403,18 @@ try {
     // Vérifier si l'index unique sur email existe
     $email_index_exists = false;
     
-    if (strpos(DB_URL, 'pgsql') !== false) {
+    // Récupération dynamique du nom de base de données
+    $database_name = null;
+    if (defined('DATABASE_URL')) {
+        $parsed_url = parse_url(DATABASE_URL);
+        $database_name = ltrim($parsed_url['path'], '/');
+    } elseif (getenv('DATABASE_URL')) {
+        $parsed_url = parse_url(getenv('DATABASE_URL'));
+        $database_name = ltrim($parsed_url['path'], '/');
+    }
+    $database_name = $database_name ?? 'lawapp';
+
+    if ($driver_name === 'pgsql') {
         // PostgreSQL
         $sql = "
             SELECT COUNT(*) 
@@ -417,7 +428,7 @@ try {
         $sql = "
             SELECT COUNT(*) 
             FROM information_schema.statistics 
-            WHERE table_schema = '" . DB_NAME . "' 
+            WHERE table_schema = '" . $database_name . "' 
             AND table_name = 'utilisateurs' 
             AND column_name = 'email'
         ";
@@ -428,7 +439,7 @@ try {
         echo "<p class='warning'>L'index unique sur la colonne 'email' n'existe pas. Création en cours...</p>";
         
         try {
-            if (strpos(DB_URL, 'pgsql') !== false) {
+            if ($driver_name === 'pgsql') {
                 // PostgreSQL
                 $sql = "CREATE UNIQUE INDEX utilisateurs_email_idx ON utilisateurs (email)";
             } else {
