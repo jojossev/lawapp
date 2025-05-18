@@ -46,6 +46,7 @@ require_once 'includes/header.php';
             <div class="links-grid">
                 <a href="fix_database_name.php" class="btn btn-primary" style="font-weight: bold; font-size: 1.2em; background-color: #dc3545;">CORRIGER NOM BASE DE DONNÉES</a>
                 <a href="fix_missing_tables_columns.php" class="btn btn-primary" style="font-weight: bold; font-size: 1.2em; background-color: #dc3545;">CORRIGER TABLES MANQUANTES</a>
+                <a href="fix_utilisateurs_table.php" class="btn btn-primary" style="font-weight: bold; font-size: 1.2em; background-color: #dc3545;">CORRIGER TABLE UTILISATEURS</a>
                 <a href="fix_all_issues.php" class="btn btn-primary" style="font-weight: bold; font-size: 1.2em; background-color: #007bff;">CORRIGER TOUS LES PROBLÈMES</a>
                 <a href="add_column_id_categorie.php" class="btn">Ajouter colonne id_categorie</a>
                 <a href="create_categories_tables.php" class="btn">Créer tables catégories</a>

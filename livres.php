@@ -27,7 +27,7 @@ try {
                 l.id, 
                 l.titre, 
                 l.auteur, 
-                l.image_url,
+                COALESCE(l.image_url, l.url_image) AS image_url,
                 l.statut,
                 cl.date_creation,
                 cl.nom AS nom_categorie_livre

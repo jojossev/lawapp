@@ -50,11 +50,11 @@ try {
             v.url_video,
             v.duree,
             v.niveau, 
-            cv.nom_categorie AS nom_categorie_video,
-            CONCAT(u.prenom, ' ', u.nom) AS nom_createur,
+            cv.nom AS nom_categorie_video,
+            COALESCE(CONCAT(u.prenom, ' ', u.nom), 'Auteur inconnu') AS nom_createur,
             v.statut
         FROM videos v
-        LEFT JOIN categories_videos cv ON v.id_categorie_video = cv.id
+        LEFT JOIN categories_videos cv ON v.id_categorie = cv.id
         LEFT JOIN utilisateurs u ON v.id_createur = u.id
         WHERE v.id = :video_id
     ");

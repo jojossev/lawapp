@@ -33,13 +33,13 @@ try {
             v.statut,
             v.date_creation,
             v.date_mise_a_jour,
-            vc.nom AS nom_categorie,
-            CONCAT(u.prenom, ' ', u.nom) AS nom_createur,
-            u.email AS email_createur 
+            cv.nom AS nom_categorie,
+            COALESCE(CONCAT(u.prenom, ' ', u.nom), 'Auteur inconnu') AS nom_createur,
+            COALESCE(u.email, 'email@exemple.com') AS email_createur 
         FROM videos v
-        LEFT JOIN video_categories vc ON v.id_categorie = vc.id
+        LEFT JOIN categories_videos cv ON v.id_categorie = cv.id
         LEFT JOIN utilisateurs u ON v.id_createur = u.id
-        WHERE v.id = :id AND v.statut = 'publie'
+        WHERE v.id = :id
     ");
     
     $stmt->bindParam(':id', $video_id, PDO::PARAM_INT);

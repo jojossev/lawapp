@@ -18,10 +18,9 @@ try {
             v.niveau,
             v.prix,
             cv.nom AS nom_categorie_video,
-            CONCAT(u.prenom, ' ', u.nom) AS nom_createur
+            'Administrateur' AS nom_createur
         FROM videos v
         LEFT JOIN categories_videos cv ON v.id_categorie = cv.id
-        LEFT JOIN utilisateurs u ON v.id_createur = u.id
         WHERE v.statut = 'publie'
         ORDER BY v.date_creation DESC
     ");

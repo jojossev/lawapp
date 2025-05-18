@@ -140,8 +140,10 @@ if (tableExists($pdo, 'livres')) {
                 auteur VARCHAR(255) NOT NULL,
                 description TEXT,
                 url_image VARCHAR(255),
+                image_url VARCHAR(255),
                 url_telechargement VARCHAR(255),
                 id_categorie INT,
+                statut VARCHAR(50) DEFAULT 'publie',
                 date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )";
         } else {
@@ -151,8 +153,10 @@ if (tableExists($pdo, 'livres')) {
                 auteur VARCHAR(255) NOT NULL,
                 description TEXT,
                 url_image VARCHAR(255),
+                image_url VARCHAR(255),
                 url_telechargement VARCHAR(255),
                 id_categorie INT,
+                statut VARCHAR(50) DEFAULT 'publie',
                 date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )";
         }
@@ -174,7 +178,13 @@ if (!tableExists($pdo, 'videos')) {
                 titre VARCHAR(255) NOT NULL,
                 description TEXT,
                 url_video VARCHAR(255) NOT NULL,
+                image_thumbnail_url VARCHAR(255),
+                duree VARCHAR(10),
+                niveau VARCHAR(50),
+                prix DECIMAL(10,2) DEFAULT 0,
                 id_categorie INT,
+                id_createur INT,
+                statut VARCHAR(50) DEFAULT 'publie',
                 date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )";
         } else {
@@ -183,7 +193,13 @@ if (!tableExists($pdo, 'videos')) {
                 titre VARCHAR(255) NOT NULL,
                 description TEXT,
                 url_video VARCHAR(255) NOT NULL,
+                image_thumbnail_url VARCHAR(255),
+                duree VARCHAR(10),
+                niveau VARCHAR(50),
+                prix DECIMAL(10,2) DEFAULT 0,
                 id_categorie INT,
+                id_createur INT,
+                statut VARCHAR(50) DEFAULT 'publie',
                 date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )";
         }
