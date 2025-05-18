@@ -168,10 +168,10 @@ try {
     // Vérifier la clé étrangère vers utilisateurs
     $sql = "
         SELECT COUNT(*) 
-        FROM information_schema.key_column_usage 
-        WHERE TABLE_NAME = 'inscriptions' 
-        AND COLUMN_NAME = 'id_utilisateur' 
-        AND REFERENCED_TABLE_NAME = 'utilisateurs'
+        FROM information_schema.constraint_column_usage 
+        WHERE table_name = 'inscriptions' 
+        AND column_name = 'id_utilisateur' 
+        AND constraint_name LIKE 'fk_%'
     ";
     
     if ($pdo->query($sql)->fetchColumn() === 0) {
@@ -190,10 +190,10 @@ try {
     // Vérifier la clé étrangère vers cours
     $sql = "
         SELECT COUNT(*) 
-        FROM information_schema.key_column_usage 
-        WHERE TABLE_NAME = 'inscriptions' 
-        AND COLUMN_NAME = 'id_cours' 
-        AND REFERENCED_TABLE_NAME = 'cours'
+        FROM information_schema.constraint_column_usage 
+        WHERE table_name = 'inscriptions' 
+        AND column_name = 'id_cours' 
+        AND constraint_name LIKE 'fk_%'
     ";
     
     if ($pdo->query($sql)->fetchColumn() === 0) {
